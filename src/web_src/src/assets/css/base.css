@@ -1,0 +1,11 @@
+/*通用 css 样式*/
+
+html, body {
+    height: 100%;
+    
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    box-sizing: border-box;
+}
