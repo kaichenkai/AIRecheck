@@ -125,12 +125,10 @@
                         </el-form-item>
                     </el-form>
                 </el-col>
-                <!--                v-show="searchData.length !== 0"-->
                 <el-col
-                        :span="19"
-                        class="table-style right-part"
                         :style="{width:hideCondition?'100%':' calc(100% - 360px)'}"
-
+                        class="table-style right-part"
+                        v-show="queryData.length !== 0"
                 >
                     <el-row style="height:62px;line-height:62px;background:#fff;border-bottom: 1px solid #ebecec;margin-left: 20px;">
                         <span class="search-result-total">符合条件条件目标 {{totalNum}} 个</span>
@@ -214,7 +212,7 @@
                         <!--list module-->
                         <div style="height: 100%;" v-show="isTableStyle">
                             <el-table
-                                    :data="searchData"
+                                    :data="queryData"
                                     v-loading="loading"
                                     element-loading-text="正在查询..."
                                     class="element-table-reset"
@@ -327,9 +325,9 @@
                         <!--                        </div>-->
                     </el-row>
                 </el-col>
-                <!--                <el-col :span="19" class="empty-wrap" key="empty">-->
-                <!--                    <img src="@/assets/img/empty.png" alt="empty"/>-->
-                <!--                </el-col>-->
+                <el-col :span="19" v-show="queryData.length === 0" class="empty-wrap" key="empty">
+                    <img src="@/assets/img/empty.png" alt="empty"/>
+                </el-col>
 
             </el-row>
         </div>
@@ -384,7 +382,7 @@
                 },
 
                 // 页面数据
-                searchData: [],
+                queryData: [],
                 totalNum: 0,
                 pageSize: 24,
                 currentPage: 1,
@@ -511,7 +509,7 @@
                     recog_start_time: recogStartTime,  // 时间戳 1234567890123
                     recog_end_time: recogEndTime, // 时间戳 1234567890123
                     reason_code: preRecheckStatus,
-                    manual_check_status: preManualCheckStatus !== "" ? [preManualCheckStatus]: [],
+                    manual_check_status: preManualCheckStatus !== "" ? [preManualCheckStatus] : [],
                     action: illegalCode
                 };
                 const resp = await this._services.recheckQuery(params, {method: "post"});
@@ -905,14 +903,10 @@
                             text-align: right;
 
                             .item {
-                                display: inline-block;
-                                height: 100%;
                                 font-size: 20px;
                                 cursor: pointer;
-
                                 img {
                                     /*margin-top: 5px;*/
-                                    vertical-align: middle;
                                 }
                             }
                         }
