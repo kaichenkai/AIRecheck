@@ -1,10 +1,10 @@
 // HttpServer 插件
 
-import axios from "axios";
+// import axios from "axios";
 
-let HttpServer = {};
+// let HttpServer = {};
 
-HttpServer.install = (Vue) => {
+// HttpServer.install = (Vue) => {
   // 1. 添加全局方法或 property
   // Vue.myGlobalMethod = function () {
   //   // 逻辑...
@@ -28,8 +28,8 @@ HttpServer.install = (Vue) => {
 
   // 4. 添加实例方法
   // 设置 baseUrl
-  axios.defaults.baseURL = "http://localhost:8888/api/";
-  Vue.prototype.$http = axios;
-};
-
-export default HttpServer;
+  // axios.defaults.baseURL = "http://localhost:8888/api/";
+  // Vue.prototype.$http = axios;
+// };
+//
+// export default HttpServer;

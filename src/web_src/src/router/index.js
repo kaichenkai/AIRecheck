@@ -8,13 +8,20 @@ const routes = [
         path: '/',
         name: 'main',
         component: () => import('../views/Main.vue'),
-        redirect: {name: "recheck"},
+        redirect: {name: "recheckQuery"},
         children: [
             {
-                // 复核页面
-                path: '/main/recheck',
-                name: 'recheck',
+                // 复核查询页面
+                path: '/main/recheckQuery',
+                name: 'recheckQuery',
                 component: () => import('../views/RecheckSearch.vue')
+                // component: () => import('../views/Login.vue')
+            },
+            {
+                // 通报统计页面
+                path: '/main/reportStatistics',
+                name: 'reportStatistics',
+                component: () => import('../views/ReportStatistics.vue')
                 // component: () => import('../views/Login.vue')
             }
         ]

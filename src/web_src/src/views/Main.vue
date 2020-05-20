@@ -71,10 +71,6 @@
             height: 100%;
 
             .el-header {
-                /*position: fixed;*/
-                /*top: 0;*/
-                /*left: 0;*/
-
                 width: 100%;
                 line-height: 60px;
                 overflow: hidden;
@@ -86,7 +82,7 @@
                 .setting {
                     a {
                         cursor: pointer;
-                        // font-size: 25px;
+                        // fonts-size: 25px;
                         // line-height: 60px;
                         display: inline-block;
                         width: 18px;

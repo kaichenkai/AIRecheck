@@ -2,14 +2,15 @@
     <!--            :default-active="$route.path.split('/')[2]"-->
 <!--                router-->
     <el-menu
-            :default-active="defaultIndex"
+            :default-active="$route.path.split('/')[2]"
+            :router="true"
             mode="horizontal"
             background-color="#0F2744"
             text-color="#7f8fa4"
             active-text-color="#fff"
     >
-        <el-menu-item index="1">复核查询</el-menu-item>
-        <el-menu-item index="2">通报统计</el-menu-item>
+        <el-menu-item index="recheckQuery">复核查询</el-menu-item>
+        <el-menu-item index="reportStatistics">通报统计</el-menu-item>
         <!--        <el-submenu-->
         <!--            v-for="item2 in mainMenuDataSub"-->
         <!--            :index="item2.menuName"-->
@@ -32,7 +33,6 @@
         name: "Menu",
         data() {
             return {
-                defaultIndex: '1'
             }
         }
     }
@@ -44,7 +44,7 @@
     }
 
     .el-menu-item.is-active {
-        /*border: none 0 !important;*/
+        border: none 0 !important;  // 去除激活导航的底部白条
     }
 
     .el-submenu__title {
@@ -60,7 +60,7 @@
 
         /*    .el-menu-item {*/
         /*        background-color: #fff !important;*/
-        /*        font-size: 14px !important;*/
+        /*        fonts-size: 14px !important;*/
 
         /*        &:hover {*/
         /*            background-color: #f2f4f7 !important;*/

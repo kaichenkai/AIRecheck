@@ -1,0 +1,164 @@
+// element的分页样式调整
+.pagination-box {
+  text-align: center;
+
+  .el-pagination {
+    display    : inline-block;
+    padding-top: 20px;
+
+    .el-pagination__jump {
+      color: #828283;
+    }
+
+    .btn-prev,
+    .btn-next {
+      background: none;
+      padding   : 0;
+      color     : #18a5d6;
+
+      width      : 28px;
+      min-width  : 28px;
+      height     : 28px;
+      line-height: 28px;
+      text-align : center;
+      position   : relative;
+
+      &:after {
+        content      : ' ';
+        position     : absolute;
+        left         : 0;
+        right        : 0;
+        top          : 0;
+        bottom       : 0;
+        border       : 1px solid #18a5d6;
+        border-radius: 50%;
+      }
+    }
+
+    .el-pagination__total {
+      margin-left: 12px;
+    }
+
+    .el-pager {
+      margin: 0 10px;
+
+      li {
+        background : none;
+        position   : relative;
+        // width   :30px;
+        min-width  : 30px;
+        height     : 30px;
+        line-height: 30px;
+        text-align : center;
+        color      : #828283;
+      }
+
+      li.active {
+        position: relative;
+
+        &:after {
+          content      : ' ';
+          position     : absolute;
+          left         : 0;
+          right        : 0;
+          top          : 0;
+          bottom       : 0;
+          border       : 1px solid #18a5d6;
+          border-radius: 50%;
+        }
+
+        color        :#fff;
+        border-radius: 50%;
+        background   : #18a5d6;
+        font-size    : 12px;
+      }
+    }
+  }
+}
+
+// element的table样式调整
+.element-reset-table {
+
+  // checkbox颜色重置
+  .el-checkbox__input.is-checked .el-checkbox__inner,
+  .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: #61b972;
+    border-color    : #61b972;
+  }
+
+  .cell {
+    font-size: 12px;
+    color    : #333c48;
+  }
+
+  .el-table__header-wrapper {
+    background: #f5f8fa;
+
+    .el-table__header {
+      th {
+        background: #f5f8fa;
+
+        .cell {
+          color: #7f8fa4;
+        }
+      }
+    }
+  }
+
+  th {
+    padding: 4px 0;
+  }
+
+  td {
+    padding: 8px 0;
+  }
+
+  td,
+  th.is-leaf {
+    border-bottom: none;
+  }
+}
+
+.element-table-reset {
+  border       : 1px solid #E3E7EC;
+  border-right : 1px solid #E3E7EC !important;
+  border-radius: 5px;
+
+  .el-table__header-wrapper {
+    table {
+      thead {
+        background-color: #F4F7F9 !important;
+
+        tr {
+          th {
+            background-color: #F4F7F9 !important;
+            color           : #78859C !important;
+          }
+        }
+      }
+    }
+  }
+
+  .cell {
+    font-size: 12px;
+    color    : #333c48;
+  }
+
+  .el-table__header-wrapper {
+    background: #f5f8fa;
+
+    .el-table__header {
+      th {
+        background: #f5f8fa;
+
+        .cell {
+          color: #7f8fa4;
+        }
+      }
+    }
+  }
+}
+
+.el-select__tags {
+  overflow: hidden;
+}
