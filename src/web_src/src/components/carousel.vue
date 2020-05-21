@@ -52,14 +52,14 @@
                 />
             </div>
 
-<!--            <Magnifier-->
-<!--                :imgList="imgList"-->
-<!--                :imgActiveIndex="imgActiveIndex"-->
-<!--                ref="magnifier"-->
-<!--                v-loading="isAnimate"-->
-<!--                element-loading-spinner="el-icon-loadin"-->
-<!--                element-loading-background="rgba(0, 0, 0, 0)"-->
-<!--            />-->
+            <Magnifier
+                :imgList="imgList"
+                :imgActiveIndex="imgActiveIndex"
+                ref="magnifier"
+                v-loading="isAnimate"
+                element-loading-spinner="el-icon-loadin"
+                element-loading-background="rgba(0, 0, 0, 0)"
+            />
 
             <el-button
                 class="next-btn"
@@ -113,20 +113,20 @@
             </ul>
         </el-col>
 
-        <img src="../assets/no-pic.png" class="no-pic" v-show="imgList&&imgList.length===0" />
+        <img src="../assets/no-pic.png" class="no-pic" v-show="imgList&&imgList.length===0"/>
     </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { State } from 'vuex-class';
-// import { configAjax } from '@/common/tsService';
-import { message, debounce } from '../common/tools.js';
-// import Magnifier from '@/components//magnifier.vue';
+import { configAjax } from '@/common/tsService';
+import { message, debounce } from '../common/tools';
+import Magnifier from '../components/magnifier.vue';
 const noPic = require('../assets/no-pic.png');
 
 @Component({
     components: {
-        // Magnifier
+        Magnifier
     },
     filters: {
         imageUrl(val: string) {

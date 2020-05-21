@@ -9,12 +9,11 @@ import './assets/fonts/iconfont.css';
 
 // element-ui
 import ElementUI from "element-ui";
+Vue.use(ElementUI);
 // import "element-ui/lib/theme-chalk/index.css";
 import './assets/theme/index.css';
-Vue.use(ElementUI);
 // element-ui custom
 import './common/elementReset.less';
-
 // common CSS
 import "@/assets/css/base.css"
 

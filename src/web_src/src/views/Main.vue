@@ -7,7 +7,7 @@
                         <img src="../assets/img/lg.png"/>
                     </el-col>
                     <el-col :span="4" class="title-wrap">
-                        AI车牌复核系统
+                        车牌复核分析系统
                     </el-col>
                     <el-col :span="15" style="text-align:right;transition: 500ms;">
                         <Menu></Menu>

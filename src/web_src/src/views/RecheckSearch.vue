@@ -25,6 +25,7 @@
                             ref="form"
                             :show-message="true"
                             class="search-conditions"
+                            @keyup.enter="query()"
                     >
                         <el-form-item label="录入时段" prop="entryTimeRange" class="width-fix">
                             <el-date-picker
@@ -209,7 +210,7 @@
                         </div>
                     </el-row>
                     <el-row class="table-list">
-                        <!--list module-->
+                        <!--列表模式-->
                         <div style="height: 100%;" v-show="isTableStyle">
                             <el-table
                                     :data="queryData"
@@ -307,10 +308,10 @@
                             </div>
                         </div>
 
-                        <!--medium icons-->
+                        <!--卡片模式-->
                         <!--                        <div style="height: 100%;" v-show="!isTableStyle">-->
                         <!--                            <SearchResult-->
-                        <!--                                    :searchData="searchData"-->
+                        <!--                                    :queryData="queryData"-->
                         <!--                                    :SearchResultOpt="SearchResultOpt"-->
                         <!--                                    ref="searchResult"-->
                         <!--                                    :multipleSelection="multipleSelection"-->
@@ -331,23 +332,184 @@
 
             </el-row>
         </div>
+        <el-dialog
+                class="detail-info"
+                :close-on-click-modal="false"
+                title="复核信息查看"
+                center
+                width="1000px"
+                margin-top="5vh"
+                :visible.sync="detailVisible"
+        >
+            <el-row class="detail-body1" v-loading="isDetailInfoLoading">
+                <el-col :span="1" class="v-c m-r-5" style="height:670px">
+                    <el-tooltip
+                            :disabled="isLeftTipdisabled"
+                            content="上一条"
+                            placement="bottom"
+                            effect="light"
+                    >
+                        <el-button
+                                @click="detailInfoToggle('prev');isLeftTipdisabled = true"
+                                type="primary"
+                                icon="el-icon-arrow-left"
+                                circle
+                                :disabled="detailInfoIdx<=0"
+                        ></el-button>
+                    </el-tooltip>
+                </el-col>
+                <el-col :span="21">
+                    <div class="line"></div>
+                    <el-steps class="steps">
+                        <el-step
+                                v-for="item in stepsList"
+                                v-bind:title="item.title"
+                                v-bind:description="item.description"
+                                :key="item.code"
+                        ></el-step>
+                    </el-steps>
+                    <el-row style="width:100%;height:400px;;margin:0 auto;">
+                        <Carousel
+                                ref="swiperImg"
+                                :imgList="dialogData.imageIdList"
+                                v-show="dialogData.imageIdList"
+                        />
+                    </el-row>
+                    <div class="illegal-bar">
+                        <el-collapse v-model="activeNames">
+                            <el-collapse-item name="original" class="original">
+                                <template slot="title">原始信息<i class="header-icon el-icon-info"></i></template>
+                                <el-row class="original-content">
+                                    <el-col :span="5">
+                                        <el-col :span="10" class="d-title">号牌号码：</el-col>
+                                        <el-col :span="14">{{dialogData.srcCarPlateNumber}}</el-col>
+                                    </el-col>
+                                    <el-col :span="5">
+                                        <el-col :span="10" class="d-title">违法行为：</el-col>
+                                        <el-col
+                                                :span="14"
+                                        >{{dialogData.illegalCode}}
+                                        </el-col>
+                                    </el-col>
+                                </el-row>
+                            </el-collapse-item>
+                            <el-collapse-item name="discern" class="discern">
+                                <template slot="title" class="item-title">识别信息<i class="header-icon el-icon-view"></i>
+                                </template>
+                                <el-row class="discern-content">
+                                    <el-col :span="10">
+                                        <el-col :span="5" class="d-title">号牌号码：</el-col>
+                                        <el-col :span="19">{{dialogData.sdkCarPlateNumber}}</el-col>
+                                    </el-col>
+                                    <el-col :span="10">
+                                        <el-col :span="5" class="d-title">识别结果：</el-col>
+                                        <el-col :span="19">{{handleSdkReasonCode(dialogData.sdkReasonCode)}}
+                                        </el-col>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="10">
+                                        <el-col :span="7" class="d-title">提取号牌图片：</el-col>
+                                        <el-col :span="17">此处是一张图片</el-col>
+                                    </el-col>
+                                    <el-col :span="10">
+                                        <el-col :span="5" class="d-title">字段得分：</el-col>
+                                        <el-col :span="12">
+                                            <table border="1" style="text-align: center">
+                                                <tbody>
+                                                    <tr>
+                                                        <td v-for="(item, index) in dialogData.sdkCarPlateNumber" :key="index">{{item}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td v-for="(item, index) in dialogData.sdkPlateScores" :key="index">{{item}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </el-col>
+                                    </el-col>
+                                    <!--                                    <el-col :span="8">-->
+                                    <!--                                        <el-col :span="6" class="d-title">车辆款型：</el-col>-->
+                                    <!--                                        <el-col-->
+                                    <!--                                                :span="17"-->
+                                    <!--                                                style="width:150px"-->
+                                    <!--                                                class="t-e"-->
+                                    <!--                                                :title="dialogData.carStyleName"-->
+                                    <!--                                        >{{dialogData.carStyleName||'-'}}-->
+                                    <!--                                        </el-col>-->
+                                    <!--                                    </el-col>-->
+                                    <!--                                    <el-col :span="8">-->
+                                    <!--                                        <el-col :span="6" class="d-title">车辆颜色：</el-col>-->
+                                    <!--                                        <el-col :span="17">{{dialogData.carColorCodeName||'-'}}</el-col>-->
+                                    <!--                                    </el-col>-->
+                                    <!--                                    <el-col :span="8">-->
+                                    <!--                                        <el-col :span="6" class="d-title">废片原因：</el-col>-->
+                                    <!--                                        &lt;!&ndash;                                        <el-col&ndash;&gt;-->
+                                    <!--                                        &lt;!&ndash;                                                :span="18"&ndash;&gt;-->
+                                    <!--                                        &lt;!&ndash;                                                class="t-e"&ndash;&gt;-->
+                                    <!--                                        &lt;!&ndash;                                                style="width:175px"&ndash;&gt;-->
+                                    <!--                                        &lt;!&ndash;                                                :title="handleWasteCode(dialogData)"&ndash;&gt;-->
+                                    <!--                                        &lt;!&ndash;                                        >{{handleWasteCode(dialogData)}}&ndash;&gt;-->
+                                    <!--                                        &lt;!&ndash;                                        </el-col>&ndash;&gt;-->
+                                    <!--                                    </el-col>-->
+                                </el-row>
+                                <!--                                <el-row>-->
+                                <!--                                    <el-col :span="8">-->
+                                <!--                                        <el-col :span="6" class="d-title">国标代码：</el-col>-->
+                                <!--                                        &lt;!&ndash;                                        <el-col :span="17">{{handleGbCode(dialogData,true)}}</el-col>&ndash;&gt;-->
+                                <!--                                    </el-col>-->
+                                <!--                                    <el-col :span="16">-->
+                                <!--                                        <el-col :span="3" class="d-title">国标描述：</el-col>-->
+                                <!--                                        &lt;!&ndash;                                        <el-col&ndash;&gt;-->
+                                <!--                                        &lt;!&ndash;                                                :span="20"&ndash;&gt;-->
+                                <!--                                        &lt;!&ndash;                                                class="t-e"&ndash;&gt;-->
+                                <!--                                        &lt;!&ndash;                                                style="width:175px"&ndash;&gt;-->
+                                <!--                                        &lt;!&ndash;                                                :title="handleGbCode(dialogData)"&ndash;&gt;-->
+                                <!--                                        &lt;!&ndash;                                        >&ndash;&gt;-->
+                                <!--                                        &lt;!&ndash;                                            {{handleGbCode(dialogData)}}&ndash;&gt;-->
+                                <!--                                        &lt;!&ndash;                                        </el-col>&ndash;&gt;-->
+                                <!--                                    </el-col>-->
+                                <!--                                </el-row>-->
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </el-col>
+                <el-col :span="1" class="v-c m-l-5" style="height:670px">
+                    <el-tooltip
+                            :disabled="isRightTipdisabled"
+                            content="下一条"
+                            placement="bottom"
+                            effect="light"
+                    >
+                        <el-button
+                                @click="detailInfoToggle('next');isRightTipdisabled = true"
+                                type="primary"
+                                icon="el-icon-arrow-right"
+                                circle
+                                :disabled="detailInfoIdx>=queryData.length-1"
+                        ></el-button>
+                    </el-tooltip>
+                </el-col>
+            </el-row>
+        </el-dialog>
     </el-row>
 </template>
 
 <script lang="ts">
     import {
-        recheckStatus,
         manualCheckStatus,
-        recheckStatusMap,
         manualCheckStatusMap,
+        recheckStatus,
+        recheckStatusMap,
         tableColumnWidth
-    } from "../common/dataCustom.js";
+    } from "../common/dataCustom";
+    // import Carousel from "../components/carousel";
     // import SearchResult from "../components/recheckSearch/result.vue";
 
     const moment = require("moment");
     export default {
         name: "RecheckSearch",
         components: {
+            // Carousel
             // SearchResult
         },
         data() {
@@ -356,7 +518,7 @@
                 manualCheckStatus, //审核状态
                 tableColumnWidth,  //表格列宽度
 
-                // 标签控制参数
+                // 主页标签控制参数
                 labelPosition: "top",
                 hideCondition: false,//跳转过来隐藏条件
                 isList: true,
@@ -366,18 +528,65 @@
                 exportNum: 1, // 导出条数
                 exportProcess: 0,//打包进度
                 exportLoading: false,
-                loading: false,
+                loading: false,//加载状态
+
+                // 复核结果详情页控制参数
+                detailVisible: false,
+                isDetailInfoLoading: false,//加载状态
+                isLeftTipdisabled: false,//是否有上一页
+                isRightTipdisabled: false,//是否有下一页
+                detailInfoIdx: 0,//当前信息索引
+                activeNames: ["original", "discern"],
+                dialogData: {},
+                stepsList: [{
+                    code: 0,
+                    title: "数据录入",
+                    description:
+                        "公司A" +
+                        "\n" +
+                        // this.timeFormat(
+                        //     dataList.snapshotTime,
+                        //     "dateTime"
+                        // )
+                        "2020-05-20 16:19:18"
+                }, {
+                    code: 1,
+                    title: "AI复核",
+                    description:
+                        "复核结果" +
+                        "\n" +
+                        // this.timeFormat(
+                        //     dataList.autoCheckTime,
+                        //     "dateTime"
+                        // )
+                        "2020-05-20 16:19:18"
+                }, {
+                    code: 4,
+                    title: "数据发布",
+                    description:
+                        "发布状态" +
+                        "\n" +
+                        // this.timeFormat(
+                        //     uploadTime,
+                        //     "dateTime"
+                        // )
+                        "2020-05-20 16:19:18"
+                }],
+                tableData: [
+                    "-N697A9",//识别号牌号码
+                    [99, 99, 99, 99, 99, 99, 99]
+                ],
 
                 // 请求参数
                 paramCol: {
                     // 录入时间, 识别时间
-                    entryTimeRange: [this.tools.timeFormat(new Date(new Date().setHours(0, 0, 0, 0)), "dateTime"),
-                        this.tools.timeFormat(new Date(new Date().setHours(23, 59, 59, 0)), "dateTime")],
+                    entryTimeRange: [this.tools.timeFormat(new Date(new Date(1585732024000).setHours(0, 0, 0, 0)), "dateTime"),
+                                     this.tools.timeFormat(new Date(new Date(1588151224000).setHours(23, 59, 59, 0)), "dateTime")],
                     recogTimeRange: [],
                     recheckStatusName: "全部",      // 复核
                     preRecheckStatus: [],
                     manualCheckStatusName: "全部",  // 人工审核
-                    preManualCheckStatus: [],
+                    preManualCheckStatus: "",
                     illegalCode: "",                // 违法类型编码
                 },
 
@@ -520,23 +729,23 @@
                     return;
                 }
                 if (result.length === 0) {
-                    _this.searchData = [];
+                    _this.queryData = [];
                     _this.tools.message("无数据", "warning");
                     return;
                 }
                 _this.totalNum = total;
-                _this.searchData = result;
+                _this.queryData = result;
 
-                // for (let i = 0; i < _this.searchData.length; i++) {
-                //   if (_this.searchData[i].imageIdList) {
-                //     if (_this.searchData[i].combinedPicId) {
-                //       _this.searchData[i].imageIdList.unshift(
-                //         _this.searchData[i].combinedPicId
+                // for (let i = 0; i < _this.queryData.length; i++) {
+                //   if (_this.queryData[i].imageIdList) {
+                //     if (_this.queryData[i].combinedPicId) {
+                //       _this.queryData[i].imageIdList.unshift(
+                //         _this.queryData[i].combinedPicId
                 //       );
                 //     }
-                //     if (_this.searchData[i].carNumPicId) {
-                //       _this.searchData[i].imageIdList.push(
-                //         _this.searchData[i].carNumPicId
+                //     if (_this.queryData[i].carNumPicId) {
+                //       _this.queryData[i].imageIdList.push(
+                //         _this.queryData[i].carNumPicId
                 //       );
                 //     }
                 //   }
@@ -553,7 +762,7 @@
                 //       if (selectedData[_this.currentPage - 1]) {
                 //         selectedData[_this.currentPage - 1].map(
                 //           i => {
-                //             _this.searchData.map(data => {
+                //             _this.queryData.map(data => {
                 //               if (data.id === i) {
                 //                 _this.$refs.searchResult.checkedItems.push(
                 //                   i
@@ -564,7 +773,7 @@
                 //         );
                 //         if (
                 //           _this.$refs.searchResult.checkedItems
-                //             .length === _this.searchData.length
+                //             .length === _this.queryData.length
                 //         ) {
                 //           _this.$refs.searchResult.allCheck = true;
                 //         }
@@ -578,7 +787,7 @@
                 //       if (selectedData[_this.currentPage - 1]) {
                 //         selectedData[_this.currentPage - 1].map(
                 //           i => {
-                //             _this.searchData.map(data => {
+                //             _this.queryData.map(data => {
                 //               if (data.id === i) {
                 //                 _this.$refs.multipleTable.store.states.selection.push(
                 //                   data
@@ -593,7 +802,7 @@
                 //       }
                 //       if (
                 //         _this.multipleSelection.length ===
-                //         _this.searchData.length
+                //         _this.queryData.length
                 //       ) {
                 //         _this.$refs.multipleTable.store.states.isAllSelected = true;
                 //       }
@@ -603,168 +812,190 @@
             },
 
             //弹出详情
-            popDetail(row) {
+            async popDetail(row) {
                 console.log(row);
-                // this.detailInfoIdx = this.searchData.findIndex(item => item.id === row.id);
-                // this.$refs["multipleTable"].setCurrentRow(row);//标识列表模式下当前项
+                this.detailInfoIdx = this.queryData.findIndex(item => item.id === row.id);
+                this.$refs["multipleTable"].setCurrentRow(row);//标识列表模式下当前项
                 // this.$refs["searchResult"].parentToggle(this.detailInfoIdx);//标识卡片模式下当前项
-                // this.detailVisible = true;
-                // this.isDetailInfoLoading = true;
-                // this._services
-                //   .illegalSearchDetail(
-                //     {
-                //       wfId: row.id
-                //     },
-                //     {
-                //       method: "post"
-                //     }
-                //   )
-                //   .then(res => {
-                //     this.isDetailInfoLoading = false;
-                //     if (parseInt(res.errorCode, 10) !== 0) {
-                //       this.tools.message(res.message, "error");
-                //       return;
-                //     }
+                this.detailVisible = true;
+                this.isDetailInfoLoading = true;
+                this.isDetailInfoLoading = false;
+                // 兼容 python 后台字段(转换)
+                this.dialogData = {
+                    id: row.id,
+                    recordId: row.src_record_id,
+                    carNumPicPath: row.car_num_pic_path,
+                    carNumPicUrl: row.car_num_pic_url,
+                    entryTime: row.data_entry_time,
+                    recogTime: row.sdk_recog_time,
+                    manualCheckStatus: row.manual_check_status,
+                    srcCarPlateNumber: row.src_car_plate_number,
+                    srcCarPlateType: row.src_car_plate_type,
+                    illegalCode: row.src_illegal_action,
+
+                    sdkCarPlateNumber: row.sdk_car_plate_number,
+                    sdkCarPalteType: row.sdk_car_plate_type,
+
+                    sdkPlateRect: row.sdk_plate_rect,
+                    sdkReasonCode: row.sdk_reason_code,
+                    sdkPlateScores: row.plate_scores,
+                };
+                // console.log(this.dialogData);
+
+                // const resp = await this._services.illegalSearchDetail(
+                //         {
+                //             wfId: row.id
+                //         },
+                //         {
+                //             method: "post"
+                //         }
+                //     )
+                //     .then(res => {
+                //         this.isDetailInfoLoading = false;
+                //         if (parseInt(res.errorCode, 10) !== 0) {
+                //             this.tools.message(res.message, "error");
+                //             return;
+                //         }
                 //
-                //     this.stepsList = [];
-                //     let dataList = res.data;
-                //     let uploadMsg = "";
+                //         this.stepsList = [];
+                //         let dataList = res.data;
+                //         let uploadMsg = "";
                 //
-                //     this.$nextTick(() => {
-                //       this.multipleSelection = [];
-                //       if (dataList.manufacturerCodeName) {
-                //         this.stepsList.push({
-                //           code: 0,
-                //           title: "违法抓拍",
-                //           description:
-                //             dataList.manufacturerCodeName +
-                //             "\n" +
-                //             this.timeFormat(
-                //               dataList.snapshotTime,
-                //               "dateTime"
-                //             )
+                //         this.$nextTick(() => {
+                //             this.multipleSelection = [];
+                //             if (dataList.manufacturerCodeName) {
+                //                 this.stepsList.push({
+                //                     code: 0,
+                //                     title: "违法抓拍",
+                //                     description:
+                //                         dataList.manufacturerCodeName +
+                //                         "\n" +
+                //                         this.timeFormat(
+                //                             dataList.snapshotTime,
+                //                             "dateTime"
+                //                         )
+                //                 });
+                //             }
+                //             if (dataList.autoCheckStatus) {
+                //                 let autoCheckStatus = "";
+                //                 const aim = firStatusS.find(
+                //                     i => i.code === dataList.autoCheckStatus
+                //                 );
+                //
+                //                 if (aim && aim.name) {
+                //                     autoCheckStatus = aim.name;
+                //                 }
+                //                 this.stepsList.push({
+                //                     code: 1,
+                //                     title: "AI预审",
+                //                     description:
+                //                         autoCheckStatus +
+                //                         "\n" +
+                //                         this.timeFormat(
+                //                             dataList.autoCheckTime,
+                //                             "dateTime"
+                //                         )
+                //                 });
+                //             }
+                //             if (dataList.firstCheckStatus) {
+                //                 let firstCheckStatus = "";
+                //                 let firstCheckOperater = "";
+                //                 const aim = secStatusT.find(
+                //                     i => i.code === dataList.firstCheckStatus
+                //                 );
+                //
+                //                 if (aim && aim.name) {
+                //                     firstCheckStatus = aim.name;
+                //                 }
+                //                 if (dataList.firstCheckOperater) {
+                //                     firstCheckOperater =
+                //                         dataList.firstCheckOperater;
+                //                 } else {
+                //                     firstCheckOperater = "";
+                //                 }
+                //                 this.stepsList.push({
+                //                     code: 2,
+                //                     title: "违法初审",
+                //                     description:
+                //                         firstCheckStatus +
+                //                         "          " +
+                //                         firstCheckOperater +
+                //                         "\n" +
+                //                         this.timeFormat(
+                //                             dataList.firstCheckTime,
+                //                             "dateTime"
+                //                         )
+                //                 });
+                //             }
+                //             if (dataList.secondCheckStatus) {
+                //                 let secondCheckStatus = "";
+                //                 let secondCheckOperater = "";
+                //                 const aim = thirdStatusT.find(
+                //                     i => i.code === dataList.secondCheckStatus
+                //                 );
+                //
+                //                 if (aim && aim.name) {
+                //                     secondCheckStatus = aim.name;
+                //                 }
+                //                 if (dataList.secondCheckOperater) {
+                //                     secondCheckOperater =
+                //                         dataList.secondCheckOperater;
+                //                 } else {
+                //                     secondCheckOperater = "";
+                //                 }
+                //                 this.stepsList.push({
+                //                     code: 3,
+                //                     title: "违法复审",
+                //                     description:
+                //                         secondCheckStatus +
+                //                         "          " +
+                //                         secondCheckOperater +
+                //                         "\n" +
+                //                         this.timeFormat(
+                //                             dataList.secondCheckTime,
+                //                             "dateTime"
+                //                         )
+                //                 });
+                //             }
+                //             if (row.uploadStatus !== 0) {
+                //                 let releaseStatus = "";
+                //                 let releaseOperater = "";
+                //
+                //                 const {uploadStatus, uploadMsg: uploadMsg2, uploadTime} = row;
+                //
+                //                 const aim = this.uploadReasonArr.find(
+                //                     item => item.code === uploadStatus
+                //                 );
+                //                 let val = "-";
+                //
+                //                 if (aim && aim.name) {
+                //                     val = aim.name;
+                //                 }
+                //                 // uploadStatus 不为0-8  取msg
+                //                 if (uploadStatus < 0 || uploadStatus > 8) {
+                //                     const {message: msg} = JSON.parse(uploadMsg2);
+                //
+                //                     val = msg;
+                //                 }
+                //                 uploadMsg = row.uploadStatus + ":" + val;
+                //
+                //                 releaseOperater = "";
+                //                 this.stepsList.push({
+                //                     code: 4,
+                //                     title: "数据发布",
+                //                     description:
+                //                         uploadMsg +
+                //                         "\n" +
+                //                         this.timeFormat(
+                //                             uploadTime,
+                //                             "dateTime"
+                //                         )
+                //                 });
+                //
+                //             }
                 //         });
-                //       }
-                //       if (dataList.autoCheckStatus) {
-                //         let autoCheckStatus = "";
-                //         const aim = firStatusS.find(
-                //           i => i.code === dataList.autoCheckStatus
-                //         );
-                //
-                //         if (aim && aim.name) {
-                //           autoCheckStatus = aim.name;
-                //         }
-                //         this.stepsList.push({
-                //           code: 1,
-                //           title: "AI预审",
-                //           description:
-                //             autoCheckStatus +
-                //             "\n" +
-                //             this.timeFormat(
-                //               dataList.autoCheckTime,
-                //               "dateTime"
-                //             )
-                //         });
-                //       }
-                //       if (dataList.firstCheckStatus) {
-                //         let firstCheckStatus = "";
-                //         let firstCheckOperater = "";
-                //         const aim = secStatusT.find(
-                //           i => i.code === dataList.firstCheckStatus
-                //         );
-                //
-                //         if (aim && aim.name) {
-                //           firstCheckStatus = aim.name;
-                //         }
-                //         if (dataList.firstCheckOperater) {
-                //           firstCheckOperater =
-                //             dataList.firstCheckOperater;
-                //         } else {
-                //           firstCheckOperater = "";
-                //         }
-                //         this.stepsList.push({
-                //           code: 2,
-                //           title: "违法初审",
-                //           description:
-                //             firstCheckStatus +
-                //             "          " +
-                //             firstCheckOperater +
-                //             "\n" +
-                //             this.timeFormat(
-                //               dataList.firstCheckTime,
-                //               "dateTime"
-                //             )
-                //         });
-                //       }
-                //       if (dataList.secondCheckStatus) {
-                //         let secondCheckStatus = "";
-                //         let secondCheckOperater = "";
-                //         const aim = thirdStatusT.find(
-                //           i => i.code === dataList.secondCheckStatus
-                //         );
-                //
-                //         if (aim && aim.name) {
-                //           secondCheckStatus = aim.name;
-                //         }
-                //         if (dataList.secondCheckOperater) {
-                //           secondCheckOperater =
-                //             dataList.secondCheckOperater;
-                //         } else {
-                //           secondCheckOperater = "";
-                //         }
-                //         this.stepsList.push({
-                //           code: 3,
-                //           title: "违法复审",
-                //           description:
-                //             secondCheckStatus +
-                //             "          " +
-                //             secondCheckOperater +
-                //             "\n" +
-                //             this.timeFormat(
-                //               dataList.secondCheckTime,
-                //               "dateTime"
-                //             )
-                //         });
-                //       }
-                //       if (row.uploadStatus !== 0) {
-                //         let releaseStatus = "";
-                //         let releaseOperater = "";
-                //
-                //         const { uploadStatus, uploadMsg: uploadMsg2, uploadTime } = row;
-                //
-                //         const aim = this.uploadReasonArr.find(
-                //           item => item.code === uploadStatus
-                //         );
-                //         let val = "-";
-                //
-                //         if (aim && aim.name) {
-                //           val = aim.name;
-                //         }
-                //         // uploadStatus 不为0-8  取msg
-                //         if (uploadStatus < 0 || uploadStatus > 8) {
-                //           const { message: msg } = JSON.parse(uploadMsg2);
-                //
-                //           val = msg;
-                //         }
-                //         uploadMsg = row.uploadStatus + ":" + val;
-                //
-                //         releaseOperater = "";
-                //         this.stepsList.push({
-                //           code: 4,
-                //           title: "数据发布",
-                //           description:
-                //             uploadMsg +
-                //             "\n" +
-                //             this.timeFormat(
-                //               uploadTime,
-                //               "dateTime"
-                //             )
-                //         });
-                //
-                //       }
+                //         this.dialogData = row;
                 //     });
-                //     this.dialogData = row;
-                //   });
             },
 
             // 复核状态条件改变
@@ -782,12 +1013,12 @@
             // 重置
             reset() {
                 this.paramCol = {
-                    entryTimeRange: [new Date(new Date().setHours(0, 0, 0, 0)), new Date(new Date().setHours(23, 59, 59, 0))],
+                    entryTimeRange: [this.tools.timeFormat(new Date(new Date().setHours(0, 0, 0, 0)), "dateTime"), this.tools.timeFormat(new Date(new Date().setHours(23, 59, 59, 0)), "dateTime")],
                     recogTimeRange: [],
                     recheckStatusName: "全部",
                     preRecheckStatus: [],
                     manualCheckStatusName: "全部",
-                    preManualCheckStatus: [],
+                    preManualCheckStatus: "",
                     illegalCode: ""
                 };
             },
@@ -815,7 +1046,7 @@
                 this.multipleSelection = [];
                 this.$refs.multipleTable.clearSelection();
                 val.map(i => {
-                    this.searchData.map(data => {
+                    this.queryData.map(data => {
                         if (data.id === i) {
                             this.$refs.multipleTable.toggleRowSelection(data, true);
                         }
@@ -842,6 +1073,9 @@
             // 处理识别结果编码
             formatterSdkReasonCode(row, column, cellValue) {
                 return recheckStatusMap[cellValue]
+            },
+            handleSdkReasonCode(sdkReasonCode) {
+                return recheckStatusMap[sdkReasonCode]
             },
 
             // 处理审核状态编码
@@ -905,6 +1139,7 @@
                             .item {
                                 font-size: 20px;
                                 cursor: pointer;
+
                                 img {
                                     /*margin-top: 5px;*/
                                 }
@@ -1092,6 +1327,18 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+            }
+
+            .original {
+                .original-content {
+                    margin-bottom: 5px;
+                }
+            }
+
+            .discern {
+                .discern-content {
+                    margin-bottom: 5px;
+                }
             }
         }
     }
