@@ -5,8 +5,7 @@ import tools from '../tools';
 // 创建axios实例
 const serviceBase = axios.create({
     // baseURL: '',
-    timeout: 30000, // 请求的超时时间
-    // timeout: 15000, // 请求的超时时间
+    timeout: 15000, // 请求的超时时间
     withCredentials: true // 允许携带cookie
 });
 
@@ -78,7 +77,8 @@ export function request(url, queryParams, axiosParams) {
     axiosParams.responseType = axiosParams.responseType || 'json';
     axiosParams.loading = axiosParams.loading || false;
     // 根据请求类型，将params设置到对应的属性中
-    if (axiosParams.method.toLowerCase() === 'post') {
+    const queryMethod = axiosParams.method.toLowerCase();
+    if (queryMethod === 'post' || queryMethod === 'patch') {
         axiosParams.data = queryParams;
     } else {
         axiosParams.params = queryParams;

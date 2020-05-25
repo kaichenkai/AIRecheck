@@ -27,9 +27,10 @@ const commonQuery = {
     recheckQuery(params, axiosParams) {
         return request(urlHttps + '/api/results', params, axiosParams, { method: 'post' });
     },
-    // statisticsQuery(params, axiosParams) {
-    //     return request(urlHttps + '/business/illegalsearch/data', params, axiosParams, { method: 'post' });
-    // }
+    //手动审核
+    manualCheck(params, axiosParams) {
+        return request(urlHttps + '/api/update/manual/status', params, axiosParams, { method: 'patch' });
+    }
 };
 
 export default {

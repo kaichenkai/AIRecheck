@@ -17,66 +17,66 @@
 
 // 复核状态(查询选项展示)
 const recheckStatus = [
-    {name: '车牌更正', code: 1},
-    {name: '疑似', code: 2},
-    {name: '模糊', code: 3},
-    {name: '遮挡', code: 4},
-    {name: '未匹配到车', code: 5}
+  { name: "车牌更正", code: 1 },
+  { name: "疑似", code: 2 },
+  { name: "模糊", code: 3 },
+  { name: "遮挡", code: 4 },
+  { name: "未匹配到车", code: 5 }
 ];
 // 复核状态字典(编码映射)
 const recheckStatusMap = {
-    0: "正常",
-    1: "车牌更正",
-    2: "疑似",
-    3: "模糊",
-    4: "遮挡",
-    5: "未匹配到车"
+  0: "正常",
+  1: "车牌更正",
+  2: "疑似",
+  3: "模糊",
+  4: "遮挡",
+  5: "未匹配到车"
 };
 
 // 审核状态(查询选项展示)
 const manualCheckStatus = [
-    {name: '全部', code: ''},
-    {name: '未审核', code: 0},
-    {name: '正片', code: 1},
-    {name: '废片', code: 2}
+  { name: "全部", code: "" },
+  { name: "未审核", code: 0 },
+  { name: "正片", code: 1 },
+  { name: "废片", code: 2 }
 ];
 // 审核状态字典（编码映射）
 const manualCheckStatusMap = {
-    0: "未审核",
-    1: "正片",
-    2: "废片"
+  0: "未审核",
+  1: "正片",
+  2: "废片"
 };
 
 
 const tableColumnWidth = {
-    sortNum: 50,//序号
-    entryTime: 200,//录入时间
-    recogTime: 200,//识别时间
-    sdkCarPlateNumber: 150,//识别号牌号码
-    srcCarPlateNumber: 150,//原始号牌号码
-    sdkReasonCode: 150,//识别结果
-    manualCheckStatus: 100,//人工审核状态
-    detailIcon: 50,//详情图标
+  sortNum: 50,//序号
+  entryTime: 200,//录入时间
+  recogTime: 200,//识别时间
+  sdkCarPlateNumber: 150,//识别号牌号码
+  srcCarPlateNumber: 150,//原始号牌号码
+  sdkReasonCode: 150,//识别结果
+  manualCheckStatus: 100,//人工审核状态
+  detailIcon: 50//详情图标
 
-    // sortNum: 50,//序号
-    // carPlateNumber: 120,//车辆号牌
-    // illegalTime: 150,//违法时间
-    // deviceId: 200,//通行点位、路口名称
-    // checkStatus: 120,//审核状态
-    // uploadStatus: 200,//上报失败原因
-    // detailIcon: 50,//详情图标
-    // carDirect: 120,//过车方向
-    // deviceCode: 200,//设备编号
-    // deviceName: 200,//设备名称
-    // projectName: 200,//项目名称
-    // illegalCode: 120,//违法代码
-    // timeRange: 150,//时段
-    // operate: 250,//操作 三个按钮
-    // counts: 80,//各种数量
+  // sortNum: 50,//序号
+  // carPlateNumber: 120,//车辆号牌
+  // illegalTime: 150,//违法时间
+  // deviceId: 200,//通行点位、路口名称
+  // checkStatus: 120,//审核状态
+  // uploadStatus: 200,//上报失败原因
+  // detailIcon: 50,//详情图标
+  // carDirect: 120,//过车方向
+  // deviceCode: 200,//设备编号
+  // deviceName: 200,//设备名称
+  // projectName: 200,//项目名称
+  // illegalCode: 120,//违法代码
+  // timeRange: 150,//时段
+  // operate: 250,//操作 三个按钮
+  // counts: 80,//各种数量
 };
 
 export {
-    recheckStatus, manualCheckStatus, recheckStatusMap, manualCheckStatusMap, tableColumnWidth
+  recheckStatus, manualCheckStatus, recheckStatusMap, manualCheckStatusMap, tableColumnWidth
 };
 
 // //预审状态(正废)

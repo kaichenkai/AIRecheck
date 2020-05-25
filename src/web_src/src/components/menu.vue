@@ -28,7 +28,7 @@
     </el-menu>
 </template>
 
-<script lang="ts">
+<script lang="js">
     export default {
         name: "Menu",
         data() {

@@ -1,4 +1,4 @@
-//const target = 'https://10.10.4.186';
+// const target = 'https://10.10.4.36.5000';
 const target = "http://10.10.19.250:5000";
 module.exports = {
   publicPath: "/", // nginx部署，nginx静态资源处理的相当于根目录部署
