@@ -489,7 +489,6 @@
 <script>
   // 数据识别状态
   const recogStatusMap = {
-    0: "未识别",
     1: "识别中",
     2: "识别完成",
     3: "识别异常",
@@ -498,7 +497,7 @@
 
   // 数据上报状态
   const reportStatusMap = {
-    0: "未上报", 1: "上报完成", 2: "上报失败"
+    1: "上报完成", 2: "上报失败"
   };
 
   import {
@@ -839,6 +838,7 @@
         this.detailVisible = true;
         this.isDetailInfoLoading = true;
         this.dialogData = row;
+        console.log(row);
         // 步骤条
         this.stepsList = [];
         const { entryPerson, entryTime, sdkRecogStatus, sdkRecogTime, reportStatus, reportTime } = this.dialogData;
@@ -848,49 +848,28 @@
             description: `${entryPerson}\n${entryTime}`
           }
         );
-        this.isDetailInfoLoading = false;
         // 识别
         const recheckStatusName = recogStatusMap[sdkRecogStatus];
-        this.stepsList.push(
-          {
-            title: "AI复核",
-            description:
-              `${recheckStatusName}\n${sdkRecogTime}`
-          }
-        );
+        if (recheckStatusName) {
+          this.stepsList.push(
+            {
+              title: "AI复核",
+              description:
+                `${recheckStatusName}\n${sdkRecogTime}`
+            }
+          );
+        }
         // 上报
         const reportStatusName = reportStatusMap[reportStatus];
-        this.stepsList.push({
-          title: "数据发布",
-          description:
-            `${reportStatusName}\n${reportTime}`
-        });
-
-
-        // if (this.dialogData.reportStatus === reportStatusMap)
+        if (reportStatusName) {
+          this.stepsList.push({
+            title: "数据上报",
+            description:
+              `${reportStatusName}\n${reportTime}`
+          });
+        }
         //
-        // this.stepsList = [
-        //   {
-        //     code: 1,
-        //     title: "AI复核",
-        //     description:
-        //       "复核结果" +
-        //       "\n" +
-        //       // this.timeFormat(
-        //       //     dataList.autoCheckTime,
-        //       //     "dateTime"
-        //       // )
-        //       "2020-05-20 16:19:18"
-        //   }, {
-        //     code: 4,
-        //     title: "数据发布",
-        //     description:
-        //       "发布状态" +
-        //       "\n" +
-        //       "2020-05-20 16:19:18"
-        //   }
-        // ];
-
+        this.isDetailInfoLoading = false;
 
         // const resp = await this._services.illegalSearchDetail(
         //         {
