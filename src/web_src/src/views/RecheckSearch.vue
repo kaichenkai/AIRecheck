@@ -507,15 +507,13 @@
     recheckStatusMap,
     tableColumnWidth
   } from "../common/dataCustom";
-  import Carousel from "../components/carousel";
-  // import SearchResult from "../components/recheckSearch/result.vue";
 
   const moment = require("moment");
+  import Carousel from "../components/carousel"
   export default {
     name: "RecheckSearch",
     components: {
       Carousel
-      // SearchResult
     },
     data() {
       return {
@@ -672,18 +670,6 @@
       this.query();
     },
     filters: {
-      // plateImageUrl(imgIdx, sdkPlateRect) {
-      //   if (!imgIdx) {
-      //     return;
-      //   }
-      //   if (imgIdx.length > 50) {
-      //     return imgIdx;
-      //   } else {
-      //     const queryStr = `box=${sdkPlateRect.replace("[", "").replace("]", "")}`;
-      //     return `${window.location.origin}/api/show/image/${imgIdx}?${queryStr}`;
-      //   }
-      // }
-
       formatterManualCheckStatus(manualCheckStatus) {
         return manualCheckStatusMap[manualCheckStatus];
       }
@@ -692,6 +678,7 @@
       //查询数据
       async query() {
         let _this = this;
+        _this.queryData = [];//清空数据
         this.loading = true;
         const { entryTimeRange: [entryStartTime, entryEndTime], recogTimeRange: [recogStartTime, recogEndTime] } = this.paramCol;
         const { preRecheckStatus, preManualCheckStatus, illegalCode } = this.paramCol;
@@ -717,7 +704,6 @@
           return;
         }
         if (result.length === 0) {
-          _this.queryData = [];
           _this.tools.message("无数据", "warning");
           return;
         }
@@ -838,7 +824,6 @@
         this.detailVisible = true;
         this.isDetailInfoLoading = true;
         this.dialogData = row;
-        console.log(row);
         // 步骤条
         this.stepsList = [];
         const { entryPerson, entryTime, sdkRecogStatus, sdkRecogTime, reportStatus, reportTime } = this.dialogData;
@@ -1503,4 +1488,3 @@
         border-color: #18a5d6;
     }
 </style>
-

@@ -30,6 +30,20 @@ const commonQuery = {
     //手动审核
     manualCheck(params, axiosParams) {
         return request(urlHttps + '/api/update/manual/status', params, axiosParams, { method: 'patch' });
+    },
+
+    // 通报统计查询
+    statisticsQuery(params, axiosParams) {
+        return request(urlHttps + '/api/create/results', params, axiosParams, { method: 'post' });
+    },
+
+    // 导出统计表格
+    outputStatisticsTable(params, axiosParams) {
+        return request(urlHttps + '/api/get/create/results/info', params, axiosParams);
+    },
+    // 导出废片
+    outputFalseTable(params, axiosParams) {
+        return request(urlHttps + '/api/get/create/results/info', params, axiosParams);
     }
 };
 

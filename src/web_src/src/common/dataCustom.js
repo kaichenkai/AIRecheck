@@ -44,11 +44,13 @@ const manualCheckStatus = [
 const manualCheckStatusMap = {
   0: "未审核",
   1: "正片",
-  2: "废片"
+  2: "废片",
+  3: "全部"
 };
 
 
 const tableColumnWidth = {
+  // 复核查询页面
   sortNum: 50,//序号
   entryTime: 200,//录入时间
   recogTime: 200,//识别时间
@@ -56,7 +58,10 @@ const tableColumnWidth = {
   srcCarPlateNumber: 150,//原始号牌号码
   sdkReasonCode: 150,//识别结果
   manualCheckStatus: 100,//人工审核状态
-  detailIcon: 50//详情图标
+  detailIcon: 50,//详情图标
+
+  // 通报统计页面
+  officeName: 200,
 
   // sortNum: 50,//序号
   // carPlateNumber: 120,//车辆号牌
