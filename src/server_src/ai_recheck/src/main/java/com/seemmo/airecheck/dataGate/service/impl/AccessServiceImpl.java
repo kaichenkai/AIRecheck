@@ -68,8 +68,7 @@ public class AccessServiceImpl implements AccessService {
             imgDir.mkdirs();
         }
         //保存文件到本地
-        try {
-            OutputStream os = new FileOutputStream(imgAbsolutePath);
+        try (OutputStream os = new FileOutputStream(imgAbsolutePath)) {
             os.write(imgByteArray, 0, imgByteArray.length);
         } catch (FileNotFoundException e) {
             logger.error(String.format("image path not found, error: %s", e));
