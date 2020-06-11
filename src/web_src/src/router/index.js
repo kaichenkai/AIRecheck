@@ -12,7 +12,7 @@ const routes = [
         children: [
             {
                 // 复核查询页面
-                path: '/main/recheckQuery',
+                path: '/main/recheckSearch',
                 name: 'recheckQuery',
                 component: () => import('../views/RecheckSearch.vue')
             },

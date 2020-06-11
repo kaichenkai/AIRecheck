@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seemmo.airecheck.dataGate.mapper.TrafficWfRecordAccessMapper">
+    <!--
+    接入入库
+    -->
+    <insert id="create" parameterType="com.seemmo.airecheck.dataGate.web.dto.TrafficIllegalRecordCreateDto">
+        INSERT INTO tb_traffic_wf_record
+        (create_time,
+         update_time,
+         record_id,
+         device_code,
+         car_plate_number,
+         car_plate_type,
+         illegal_time,
+         illegal_code,
+         illegal_addr,
+         collct_sector_code,
+         collct_sector_name,
+         entry_person,
+         img_url,
+         img_path
+        ) VALUES (#{createTime},
+                  #{updateTime},
+                  #{recordId},
+                  #{deviceCode},
+                  #{carPlateNumber},
+                  #{carPlateType},
+                  #{illegalTime},
+                  #{illegalCode},
+                  #{illegalAddr},
+                  #{collectSectorCode},
+                  #{collectSectorName},
+                  #{entryPerson},
+                  #{imgUrl},
+                  #{imgPath}
+        )
+    </insert>
+
+    <!--
+    查询 recordId 是否存在
+    -->
+    <select id="exist" parameterType="String" resultType="String">
+        SELECT record_id
+        FROM tb_traffic_wf_record
+        WHERE record_id = #{recordId}
+    </select>
+</mapper>
+
+
