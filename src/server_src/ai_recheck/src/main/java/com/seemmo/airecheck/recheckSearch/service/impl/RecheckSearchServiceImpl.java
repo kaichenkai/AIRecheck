@@ -1,9 +1,9 @@
 package com.seemmo.airecheck.recheckSearch.service.impl;
 
 import com.seemmo.airecheck.constant.BaseConstant;
-import com.seemmo.airecheck.core.ExceptionCode;
-import com.seemmo.airecheck.core.Result;
-import com.seemmo.airecheck.core.ResultGenerator;
+import com.seemmo.airecheck.core.ExceptionInfo;
+import com.seemmo.airecheck.core.Response;
+import com.seemmo.airecheck.core.ResponseGenerator;
 import com.seemmo.airecheck.recheckSearch.mapper.TrafficWfRecordSearchMapper;
 import com.seemmo.airecheck.recheckSearch.model.RecheckSearchData;
 import com.seemmo.airecheck.recheckSearch.model.dto.RecheckSearchDto;
@@ -24,14 +24,14 @@ public class RecheckSearchServiceImpl implements RecheckSearchService {
     private TrafficWfRecordSearchMapper trafficWfRecordSearchMapper;
 
     @Override
-    public Result astrictSearchTime(RecheckSearchDto recheckSearchDto) {
+    public Response astrictSearchTime(RecheckSearchDto recheckSearchDto) {
         Long accessStartTime = recheckSearchDto.getAccessStartTime();
         Long accessEndTime = recheckSearchDto.getAccessEndTime();
         Long apartDays = (accessEndTime - accessStartTime) / DateUtils.DAY_MILLISECONDS;
         if (apartDays > BaseConstant.CONST31) {
-            return ResultGenerator.genFailResult(ExceptionCode.SEARCH_TIME_INTERVAL_OUT.code, ExceptionCode.SEARCH_TIME_INTERVAL_OUT.message);
+            return ResponseGenerator.genFailResp(ExceptionInfo.SEARCH_TIME_INTERVAL_OUT);
         } else {
-            return ResultGenerator.genSuccessResult();
+            return ResponseGenerator.genSuccessResp();
         }
     }
 

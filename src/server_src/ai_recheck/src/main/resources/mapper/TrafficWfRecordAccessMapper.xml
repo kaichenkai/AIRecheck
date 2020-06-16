@@ -4,7 +4,7 @@
     <!--
     接入入库
     -->
-    <insert id="create" parameterType="com.seemmo.airecheck.dataGate.web.dto.TrafficIllegalRecordCreateDto">
+    <insert id="create" parameterType="com.seemmo.airecheck.dataGate.model.dto.TrafficIllegalRecordCreateDto">
         INSERT INTO tb_traffic_wf_record
         (create_time,
          update_time,

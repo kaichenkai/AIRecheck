@@ -1,9 +1,9 @@
 package com.seemmo.airecheck.dataGate.web;
 
-import com.seemmo.airecheck.core.Result;
-import com.seemmo.airecheck.core.ResultGenerator;
-import com.seemmo.airecheck.core.ExceptionCode;
-import com.seemmo.airecheck.dataGate.web.dto.TrafficIllegalRecordCreateDto;
+import com.seemmo.airecheck.core.Response;
+import com.seemmo.airecheck.core.ResponseGenerator;
+import com.seemmo.airecheck.core.ExceptionInfo;
+import com.seemmo.airecheck.dataGate.model.dto.TrafficIllegalRecordCreateDto;
 import com.seemmo.airecheck.dataGate.service.AccessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +25,18 @@ public class AccessController {
     private AccessService accessService;
 
     @PostMapping("illegallogic")
-    public Result<?> add(@RequestBody TrafficIllegalRecordCreateDto trafficIllegalRecordCreateDto) {
+    public Response<?> add(@RequestBody TrafficIllegalRecordCreateDto trafficIllegalRecordCreateDto) {
         try {
-            Result result = accessService.checkArgs(trafficIllegalRecordCreateDto);
-            if (result.success()) {
+            Response response = accessService.checkArgs(trafficIllegalRecordCreateDto);
+            if (response.success()) {
                 if(logger.isDebugEnabled()){
                     logger.debug("CHECKRECORDID:illegallogic,stored,recordId:{}", trafficIllegalRecordCreateDto.getRecordId());
                 }
             }
-            return result;
+            return response;
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return ResultGenerator.genFailResult(ExceptionCode.Unknown.code, ExceptionCode.Unknown.message);
+            return ResponseGenerator.genFailResp(ExceptionInfo.Unknown);
         }
     }
 }

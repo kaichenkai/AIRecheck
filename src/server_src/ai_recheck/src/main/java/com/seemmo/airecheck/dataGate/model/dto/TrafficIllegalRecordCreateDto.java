@@ -1,4 +1,4 @@
-package com.seemmo.airecheck.dataGate.web.dto;
+package com.seemmo.airecheck.dataGate.model.dto;
 
 import lombok.Data;
 import com.alibaba.fastjson.annotation.JSONField;

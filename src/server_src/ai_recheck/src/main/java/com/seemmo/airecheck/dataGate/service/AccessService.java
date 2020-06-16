@@ -1,7 +1,7 @@
 package com.seemmo.airecheck.dataGate.service;
 
-import com.seemmo.airecheck.core.Result;
-import com.seemmo.airecheck.dataGate.web.dto.TrafficIllegalRecordCreateDto;
+import com.seemmo.airecheck.core.Response;
+import com.seemmo.airecheck.dataGate.model.dto.TrafficIllegalRecordCreateDto;
 
 
 /**
@@ -14,7 +14,7 @@ public interface AccessService {
      * @return 是否校验通过
      *
      */
-    Result checkArgs(TrafficIllegalRecordCreateDto recordObj);
+    Response checkArgs(TrafficIllegalRecordCreateDto recordObj);
 
     int create(TrafficIllegalRecordCreateDto data);
 }

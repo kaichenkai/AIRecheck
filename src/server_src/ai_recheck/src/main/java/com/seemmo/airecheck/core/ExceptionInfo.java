@@ -3,7 +3,7 @@ package com.seemmo.airecheck.core;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum ExceptionCode {
+public enum ExceptionInfo {
 	/**
 	 * 未知错误
 	 */
@@ -157,29 +157,29 @@ public enum ExceptionCode {
 	public String  message;
 	public boolean isInnerError=false;
 	public boolean recoverable=false;
-	private static Map<Integer,ExceptionCode> instances=new ConcurrentHashMap<Integer, ExceptionCode>();
-	ExceptionCode(int code, String message) {
+	private static Map<Integer, ExceptionInfo> instances=new ConcurrentHashMap<Integer, ExceptionInfo>();
+	ExceptionInfo(int code, String message) {
 		this.code = code;
 		this.message = message;
 	}
 	
-	ExceptionCode(int code, String message,boolean isInnerError) {
+	ExceptionInfo(int code, String message, boolean isInnerError) {
 		this.code = code;
 		this.message = message;
 		this.isInnerError=isInnerError;
 		this.recoverable=isInnerError;
 	}
 	
-	ExceptionCode(int code, String message,boolean isInnerError,boolean recoverable) {
+	ExceptionInfo(int code, String message, boolean isInnerError, boolean recoverable) {
 		this.code = code;
 		this.message = message;
 		this.isInnerError=isInnerError;
 		this.recoverable=recoverable;
 	}
 	
-	public static ExceptionCode getByCode(Integer code) {
+	public static ExceptionInfo getByCode(Integer code) {
 		if(!instances.containsKey(code)) {
-			for(ExceptionCode e:ExceptionCode.values()) {
+			for(ExceptionInfo e: ExceptionInfo.values()) {
 				if(e.code==code) {
 					instances.put(code, e);
 					return e;

@@ -1,12 +1,8 @@
 package com.seemmo.airecheck.dataGate.mapper;
 
-import com.seemmo.airecheck.dataGate.model.RecordData;
-import com.seemmo.airecheck.dataGate.web.dto.TrafficIllegalRecordCreateDto;
-import com.sun.prism.impl.Disposer;
+import com.seemmo.airecheck.dataGate.model.dto.TrafficIllegalRecordCreateDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @author: kaichenkai

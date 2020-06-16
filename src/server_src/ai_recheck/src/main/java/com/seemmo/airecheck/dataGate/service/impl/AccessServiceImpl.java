@@ -1,11 +1,11 @@
 package com.seemmo.airecheck.dataGate.service.impl;
 
-import com.seemmo.airecheck.core.ExceptionCode;
-import com.seemmo.airecheck.core.Result;
-import com.seemmo.airecheck.core.ResultGenerator;
+import com.seemmo.airecheck.core.ExceptionInfo;
+import com.seemmo.airecheck.core.Response;
+import com.seemmo.airecheck.core.ResponseGenerator;
 import com.seemmo.airecheck.dataGate.mapper.TrafficWfRecordAccessMapper;
 import com.seemmo.airecheck.dataGate.web.AccessController;
-import com.seemmo.airecheck.dataGate.web.dto.TrafficIllegalRecordCreateDto;
+import com.seemmo.airecheck.dataGate.model.dto.TrafficIllegalRecordCreateDto;
 import com.seemmo.airecheck.dataGate.service.AccessService;
 import com.seemmo.airecheck.utils.DateUtils;
 import com.seemmo.airecheck.utils.HttpClientUtil;
@@ -32,16 +32,16 @@ public class AccessServiceImpl implements AccessService {
     private String basePath;
 
     @Override
-    public Result checkArgs(TrafficIllegalRecordCreateDto recordObj) {
-        Result result = new Result();
+    public Response checkArgs(TrafficIllegalRecordCreateDto recordObj) {
+        Response response = new Response();
         String recordId = recordObj.getRecordId();
         //判断记录是否重复
         String queryRecordId = trafficWfRecordAccessMapper.exist(recordId);
         if (queryRecordId != null) {
             logger.error(String.format("current record is repeated,record_id: %s", recordId));
-            result.setCode(ExceptionCode.INSTESV_REPEATED_RECORD.code);
-            result.setMessage(String.format(ExceptionCode.INSTESV_REPEATED_RECORD.message, recordId));
-            return result;
+            response.setCode(ExceptionInfo.INSTESV_REPEATED_RECORD.code);
+            response.setMessage(String.format(ExceptionInfo.INSTESV_REPEATED_RECORD.message, recordId));
+            return response;
         }
         //增加默认值
         recordObj.setCreateTime(DateUtils.getCurrentMilliSeconds());//记录创建时间
@@ -53,7 +53,8 @@ public class AccessServiceImpl implements AccessService {
             imgByteArray = httpClient.getFile(imgUrl);
         } catch (Exception e) {
             logger.error(String.format("image download abnormal, url: %s, error: %s", imgUrl, e));
-            return ResultGenerator.genFailResult(ExceptionCode.IMAGE_URL_INVALID.code, recordId, imgUrl);
+            ExceptionInfo exceptionInfo = ExceptionInfo.IMAGE_URL_INVALID;
+            return ResponseGenerator.genFailResp(exceptionInfo.code, String.format(exceptionInfo.message, recordId, imgUrl));
         }
         //保存图片,根据违法时间分目录存储
         String illegalDate = DateUtils.formatTimeToYMD(recordObj.getIllegalTime());
@@ -72,19 +73,19 @@ public class AccessServiceImpl implements AccessService {
             os.write(imgByteArray, 0, imgByteArray.length);
         } catch (FileNotFoundException e) {
             logger.error(String.format("image path not found, error: %s", e));
-            return ResultGenerator.genFailResult(ExceptionCode.IMAGE_PATH_NOT_FOUND.code, ExceptionCode.IMAGE_PATH_NOT_FOUND.message);
+            return ResponseGenerator.genFailResp(ExceptionInfo.IMAGE_PATH_NOT_FOUND);
         } catch (IOException e) {
             logger.error(String.format("image save failed, error: %s", e));
-            return ResultGenerator.genFailResult(ExceptionCode.IMAGE_SAVE_ERROR.code, ExceptionCode.IMAGE_SAVE_ERROR.message);
+            return ResponseGenerator.genFailResp(ExceptionInfo.IMAGE_SAVE_ERROR);
         }
         // 写库
         try {
             trafficWfRecordAccessMapper.create(recordObj);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return ResultGenerator.genFailResult(ExceptionCode.DATABASE_OPERATION_ERROR.code, ExceptionCode.DATABASE_OPERATION_ERROR.message);
+            return ResponseGenerator.genFailResp(ExceptionInfo.DATABASE_OPERATION_ERROR);
         }
-        return ResultGenerator.genSuccessResult();
+        return ResponseGenerator.genSuccessResp();
     }
 
     /**

@@ -6,13 +6,12 @@ import java.util.function.Consumer;
 /**
  * 统一API响应结果封装
  */
-public class Result<T> {
-    public static final int SUCCESS = 0;
+public class Response<T> {
     private int code;
     private String message;
     private T data;
 
-    public Result setCode(int resultCode) {
+    public Response setCode(int resultCode) {
         this.code = resultCode;
         return this;
     }
@@ -25,7 +24,7 @@ public class Result<T> {
         return message;
     }
 
-    public Result setMessage(String message) {
+    public Response setMessage(String message) {
         this.message = message;
         return this;
     }
@@ -34,13 +33,13 @@ public class Result<T> {
         return data;
     }
 
-    public Result setData(T data) {
+    public Response setData(T data) {
         this.data = data;
         return this;
     }
 
     public boolean success() {
-        return code == SUCCESS;
+        return code == ResponseGenerator.SUCCESS_CODE;
     }
 
     public void onFail(Consumer<String> consumer) {
