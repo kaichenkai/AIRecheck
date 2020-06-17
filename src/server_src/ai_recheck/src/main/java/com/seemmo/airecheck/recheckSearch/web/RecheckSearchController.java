@@ -36,7 +36,7 @@ public class RecheckSearchController {
                 List<RecheckSearchData> recheckSearchDataList = recheckSearchService.recheckSearch(recheckSearchDto);
             } catch (Exception e) {
                 logger.error(String.format("database operation error: %s", e));
-                return ResponseGenerator.genFailResp(ExceptionInfo.DATABASE_OPERATION_ERROR);
+                return ResponseGenerator.genErrorResp(ExceptionInfo.DATABASE_OPERATION_ERROR);
             }
         } else {
             return response;

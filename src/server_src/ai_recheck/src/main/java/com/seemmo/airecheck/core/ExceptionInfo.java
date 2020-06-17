@@ -15,11 +15,11 @@ public enum ExceptionInfo {
 	/**
 	 * 违法记录id重复
 	 */
-	INSTESV_REPEATED_RECORD(102,"current record is repeated,record_id: %s"),
+	INSTESV_REPEATED_RECORD(102,"current record is repeated, recordId: %s"),
 	/**
 	 * 无效的图片url
 	 */
-	IMAGE_URL_INVALID(103,"image url is invalid, record_id{%s}, url{%s}"),
+	IMAGE_URL_INVALID(103,"image url is invalid, recordId{%s}, url{%s}"),
 	/**
 	 * 图片路径没有找到
 	 */
@@ -29,16 +29,33 @@ public enum ExceptionInfo {
 	 */
 	IMAGE_SAVE_ERROR(105, "image saving error, please check disk capacity"),
 	/**
+	 * 服务内部错误, 请联系管理员
+	 */
+	SERVER_INTERNAL_ERROR(500, "server internal error, please contact administrator"),
+	/**
 	 * 数据库操作错误
 	 */
-	DATABASE_OPERATION_ERROR(500, "database operation error, please contact the administrator"),
+	DATABASE_OPERATION_ERROR(510, "database operation error, please contact the administrator"),
 
-	/********************* 复核结果查询**********************/
+
+	/* ******************** 复核结果查询********************* */
 	/**
 	 * 查询时间范围超出界限
 	 */
-//	SEARCH_TIME_INTERVAL_OUT(201, "the search time interval is out of bounds"),
-	SEARCH_TIME_INTERVAL_OUT(201, "查询时间范围超过一个月"),
+	SEARCH_TIME_INTERVAL_OUT(201, "the search time interval is out of bounds"),
+//	SEARCH_TIME_INTERVAL_OUT(201, "查询时间范围超过一个月"),
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	/**

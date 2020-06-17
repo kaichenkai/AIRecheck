@@ -36,7 +36,7 @@ public class AccessController {
             return response;
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return ResponseGenerator.genFailResp(ExceptionInfo.Unknown);
+            return ResponseGenerator.genErrorResp(ExceptionInfo.SERVER_INTERNAL_ERROR);
         }
     }
 }

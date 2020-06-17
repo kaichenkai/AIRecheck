@@ -1,0 +1,45 @@
+<Configuration status="WARN" monitorInterval="300">
+    <properties>
+        <property name="LOG_HOME">E:\temp\logs\airecheck</property>
+        <property name="FILE_NAME">traffic</property>
+    </properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{50} -- %msg%n" />
+
+        </Console>
+        <RollingRandomAccessFile name="DEFAULT_FILE_APPEND"
+                                 fileName="${LOG_HOME}/${FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}.%i.log">
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{50} -- %msg%n" />
+            <Policies>
+                <!--每个单位时间生成一个日志-->
+                <TimeBasedTriggeringPolicy interval="1" />
+                <!--当日志文件超过设置大小时，生成一个日志-->
+                <SizeBasedTriggeringPolicy size="200 MB" />
+            </Policies>
+            <!--日志文件保留数量-->
+            <DefaultRolloverStrategy max="15" />
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <!--
+            root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性
+            level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+            不能设置为INHERITED或者同义词NULL。默认是DEBUG
+            可以包含零个或多个元素，标识这个appender将会添加到这个logger。
+        -->
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="DEFAULT_FILE_APPEND" />
+        </Root>
+        <!--    单独控制该包下所有类的日志级别，避免debug模式输出过多日志-->
+        <Logger name="org.apache.http" level="info" />
+        <Logger name="org.springframework.web" level="info" />
+        <Logger name="org.springframework.boot" level="info" />
+        <Logger name="org.springframework.test" level="info" />
+        <Logger name="org.springframework.beans" level="info" />
+    </Loggers>
+</Configuration>

@@ -73,17 +73,17 @@ public class AccessServiceImpl implements AccessService {
             os.write(imgByteArray, 0, imgByteArray.length);
         } catch (FileNotFoundException e) {
             logger.error(String.format("image path not found, error: %s", e));
-            return ResponseGenerator.genFailResp(ExceptionInfo.IMAGE_PATH_NOT_FOUND);
+            return ResponseGenerator.genErrorResp(ExceptionInfo.IMAGE_PATH_NOT_FOUND);
         } catch (IOException e) {
             logger.error(String.format("image save failed, error: %s", e));
-            return ResponseGenerator.genFailResp(ExceptionInfo.IMAGE_SAVE_ERROR);
+            return ResponseGenerator.genErrorResp(ExceptionInfo.IMAGE_SAVE_ERROR);
         }
         // 写库
         try {
             trafficWfRecordAccessMapper.create(recordObj);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return ResponseGenerator.genFailResp(ExceptionInfo.DATABASE_OPERATION_ERROR);
+            return ResponseGenerator.genErrorResp(ExceptionInfo.DATABASE_OPERATION_ERROR);
         }
         return ResponseGenerator.genSuccessResp();
     }

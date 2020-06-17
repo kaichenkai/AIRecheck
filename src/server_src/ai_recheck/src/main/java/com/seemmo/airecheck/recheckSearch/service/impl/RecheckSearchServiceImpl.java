@@ -29,7 +29,7 @@ public class RecheckSearchServiceImpl implements RecheckSearchService {
         Long accessEndTime = recheckSearchDto.getAccessEndTime();
         Long apartDays = (accessEndTime - accessStartTime) / DateUtils.DAY_MILLISECONDS;
         if (apartDays > BaseConstant.CONST31) {
-            return ResponseGenerator.genFailResp(ExceptionInfo.SEARCH_TIME_INTERVAL_OUT);
+            return ResponseGenerator.genErrorResp(ExceptionInfo.SEARCH_TIME_INTERVAL_OUT);
         } else {
             return ResponseGenerator.genSuccessResp();
         }

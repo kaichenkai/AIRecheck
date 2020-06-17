@@ -5,8 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.seemmo.airecheck.dataGate.mapper")//使用MapperScan批量扫描所有的Mapper接口
-@MapperScan("com.seemmo.airecheck.recheckSearch.mapper")//使用MapperScan批量扫描所有的Mapper接口
+//使用MapperScan批量扫描所有的Mapper接口
+@MapperScan({"com.seemmo.airecheck.dataGate.mapper",
+             "com.seemmo.airecheck.recheckSearch.mapper"
+})
 public class Application {
 
     public static void main(String[] args) {

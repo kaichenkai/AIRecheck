@@ -3,7 +3,7 @@ package com.seemmo.airecheck.core;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * 响应结果生成工具
+ * 响应报文生成工具类
  */
 public class ResponseGenerator {
     public static final int SUCCESS_CODE = 0;
@@ -30,7 +30,7 @@ public class ResponseGenerator {
                 .setData(data);
     }
 
-    public static Response genFailResp(ExceptionInfo exceptionInfo) {
+    public static Response genErrorResp(ExceptionInfo exceptionInfo) {
         return new Response()
                 .setCode(exceptionInfo.code)
                 .setMessage(exceptionInfo.message);
@@ -48,17 +48,17 @@ public class ResponseGenerator {
                 .setMessage(DEFAULT_NODATA_MESSAGE);
     }
 
+    public static Response genResp(int code, String message) {
+        return new Response()
+                .setCode(code)
+                .setMessage(message);
+    }
+
     public static <T> Response<T> genResp(int code, String message, T data) {
         return new Response()
                 .setCode(code)
                 .setMessage(message)
                 .setData(data);
-    }
-
-    public static Response genResp(int code, String message) {
-        return new Response()
-                .setCode(code)
-                .setMessage(message);
     }
 
     public static Response parseJson(JSONObject response) {

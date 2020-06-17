@@ -1,0 +1,24 @@
+server:
+  port: 8082
+
+spring:
+  #数据源
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://10.10.4.36:3306/wf_carinfo?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+    username: dataaccess
+    password: da123qwe
+
+mybatis:
+  mapper-locations: classpath:com/seemmo/airecheck/**/mapper/*.xml
+  #  type-aliases-package: com.seemmo.airecheck
+  configuration:
+    map-underscore-to-camel-case: true  #ORM映射是否默认下划线转小驼峰
+    return-instance-for-empty-row: false  #列表查询是否返回空对象
+    #default-enum-type-handler: com.ycw.medicine.mybatis.handler.IntegerValueEnumTypeHandler #默认枚举处理器
+
+custom:
+  base-path: E:/temp
+
+application-debug: true
