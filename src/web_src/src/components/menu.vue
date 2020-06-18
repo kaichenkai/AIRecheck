@@ -9,7 +9,7 @@
             text-color="#7f8fa4"
             active-text-color="#fff"
     >
-        <el-menu-item index="recheckQuery">复核查询</el-menu-item>
+        <el-menu-item index="recheckSearch">复核查询</el-menu-item>
         <el-menu-item index="reportStatistics">通报统计</el-menu-item>
         <!--        <el-submenu-->
         <!--            v-for="item2 in mainMenuDataSub"-->

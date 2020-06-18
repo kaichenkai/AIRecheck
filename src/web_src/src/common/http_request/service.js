@@ -24,8 +24,8 @@ const urlHttps = window.location.origin;
 
 const commonQuery = {
     //复核查询
-    recheckQuery(params, axiosParams) {
-        return request(urlHttps + '/api/results', params, axiosParams, { method: 'post' });
+    recheckSearch(params, axiosParams) {
+        return request(urlHttps + '/main/recheckSearch', params, axiosParams, { method: 'post' });
     },
     //手动审核
     manualCheck(params, axiosParams) {

@@ -16,7 +16,7 @@
 // };
 
 // 复核状态(查询选项展示)
-const recheckStatus = [
+const allRecheckStatus = [
   { name: "车牌更正", code: 1 },
   { name: "疑似", code: 2 },
   { name: "模糊", code: 3 },
@@ -34,8 +34,8 @@ const recheckStatusMap = {
 };
 
 // 审核状态(查询选项展示)
-const manualCheckStatus = [
-  { name: "全部", code: "" },
+const allManualCheckStatus = [
+  { name: "全部", code: null },
   { name: "未审核", code: 0 },
   { name: "正片", code: 1 },
   { name: "废片", code: 2 }
@@ -45,7 +45,7 @@ const manualCheckStatusMap = {
   0: "未审核",
   1: "正片",
   2: "废片",
-  3: "全部"
+  null: "全部"
 };
 
 
@@ -81,7 +81,7 @@ const tableColumnWidth = {
 };
 
 export {
-  recheckStatus, manualCheckStatus, recheckStatusMap, manualCheckStatusMap, tableColumnWidth
+  allRecheckStatus, allManualCheckStatus, recheckStatusMap, manualCheckStatusMap, tableColumnWidth
 };
 
 // //预审状态(正废)

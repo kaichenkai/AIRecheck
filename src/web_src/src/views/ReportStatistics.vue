@@ -325,12 +325,12 @@
     filters: {},
 
     mounted() {
-      this.query();
+      this.search();
     },
 
     methods: {
       //查询数据
-      async query() {
+      async search() {
         let _this = this;
         _this.queryData = [];//清空数据
         this.loading = true;
@@ -402,7 +402,7 @@
       handleCurrentChange(pagenum) {
         // this.detailInfoIdx = 0;
         this.currentPage = pagenum;
-        this.query();
+        this.search();
       },
 
       // 导出废片

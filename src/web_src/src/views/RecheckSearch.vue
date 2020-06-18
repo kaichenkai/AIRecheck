@@ -25,7 +25,7 @@
                             ref="form"
                             :show-message="true"
                             class="search-conditions"
-                            @keyup.enter="query()"
+                            @keyup.enter="search()"
                     >
                         <el-form-item label="录入时段" prop="entryTimeRange" class="width-fix">
                             <el-date-picker
@@ -38,7 +38,7 @@
                                     :picker-options="pickerOptions"
                                     style="width:100%;"
                                     format="yyyy-MM-dd HH:mm:ss"
-                                    value-format="yyyy-MM-dd HH:mm:ss"
+                                    value-format="timestamp"
                             ></el-date-picker>
                         </el-form-item>
 
@@ -65,12 +65,12 @@
                                     <!--                                    <el-col :span="5" class="l-h-32">复核状态:</el-col>-->
                                     <el-col :span="24">
                                         <el-checkbox-group
-                                                v-model="paramCol.preRecheckStatus"
+                                                v-model="paramCol.recheckStatusList"
                                                 size="small"
                                                 @change="handleRecheckStatusChange"
                                         >
                                             <el-checkbox-button
-                                                    v-for="item in recheckStatus"
+                                                    v-for="item in allRecheckStatus"
                                                     :key="item.code"
                                                     :label="item.code"
                                             >{{item.name}}
@@ -78,7 +78,6 @@
                                         </el-checkbox-group>
                                     </el-col>
                                 </el-row>
-
                                 <el-input
                                         slot="reference"
                                         size="small"
@@ -90,16 +89,15 @@
 
                         <el-form-item label="审核状态" class="width-fix">
                             <el-select
-                                    v-model="paramCol.preManualCheckStatus"
+                                    v-model="paramCol.manualCheckStatus"
                                     size="small"
-                                    placeholder
                                     clearable
                                     prop="manualCheckStatus"
                                     class="width-fix"
                                     @change="handleManualCheckStatusChange"
                             >
                                 <el-option
-                                        v-for="item in manualCheckStatus"
+                                        v-for="item in allManualCheckStatus"
                                         :key="item.code"
                                         :label="item.name"
                                         :value="item.code"
@@ -120,7 +118,7 @@
                                     class="width-fix"
                                     type="primary"
                                     size="small"
-                                    @click="query()"
+                                    @click="search()"
                             >查询
                             </el-button>
                         </el-form-item>
@@ -501,9 +499,9 @@
   };
 
   import {
-    manualCheckStatus,
+    allManualCheckStatus,
     manualCheckStatusMap,
-    recheckStatus,
+    allRecheckStatus,
     recheckStatusMap,
     tableColumnWidth
   } from "../common/dataCustom";
@@ -517,8 +515,8 @@
     },
     data() {
       return {
-        recheckStatus, //复核状态
-        manualCheckStatus, //审核状态
+        allRecheckStatus, //所有复核状态
+        allManualCheckStatus, //所有审核状态
         tableColumnWidth,  //表格列宽度
 
         // 主页标签控制参数
@@ -550,14 +548,12 @@
         // 请求参数
         paramCol: {
           // 录入时间, 识别时间
-          entryTimeRange: [this.tools.timeFormat(new Date(new Date(1585732024000).setHours(0, 0, 0, 0)), "dateTime"),
-            this.tools.timeFormat(new Date(new Date(1588151224000).setHours(23, 59, 59, 0)), "dateTime")],
+          entryTimeRange: [new Date(1585732024000).setHours(0, 0, 0, 0), new Date(1588151224000).setHours(23, 59, 59, 0)],
           recogTimeRange: [],
           recheckStatusName: "全部",      // 复核
-          preRecheckStatus: [],
-          manualCheckStatusName: "全部",  // 人工审核
-          preManualCheckStatus: "",
-          illegalCode: ""                // 违法类型编码
+          recheckStatusList: [],
+          manualCheckStatus: null,
+          illegalCode: null                // 违法类型编码
         },
 
         // 页面数据
@@ -667,7 +663,7 @@
       };
     },
     mounted() {
-      this.query();
+      this.search();
     },
     filters: {
       formatterManualCheckStatus(manualCheckStatus) {
@@ -676,40 +672,39 @@
     },
     methods: {
       //查询数据
-      async query() {
+      async search() {
         let _this = this;
         _this.queryData = [];//清空数据
         this.loading = true;
         const { entryTimeRange: [entryStartTime, entryEndTime], recogTimeRange: [recogStartTime, recogEndTime] } = this.paramCol;
-        const { preRecheckStatus, preManualCheckStatus, illegalCode } = this.paramCol;
-        //
+        const { recheckStatusList, manualCheckStatus, illegalCode } = this.paramCol;
         const { pageSize, currentPage } = this;
-        // 拼接参数，兼容 python 后台接口
+        // 拼接参数
         let params = {
           pageSize,
-          current: (currentPage - 1) * pageSize,
-          start_time: entryStartTime, // 时间字符串 YYYY-MM-DD HH:mm:ss
-          end_time: entryEndTime, // 时间字符串 YYYY-MM-DD HH:mm:ss
-          recog_start_time: recogStartTime,  // 时间戳 1234567890123
-          recog_end_time: recogEndTime, // 时间戳 1234567890123
-          reason_code: preRecheckStatus,
-          manual_check_status: preManualCheckStatus !== "" ? [preManualCheckStatus] : [],
-          action: illegalCode
+          currentPage,
+          entryStartTime,
+          entryEndTime,
+          recogStartTime,  // 时间戳 1234567890123
+          recogEndTime, // 时间戳 1234567890123
+          recheckStatusList,
+          manualCheckStatus,
+          illegalCode
         };
-        const resp = await this._services.recheckQuery(params, { method: "post" });
+        const resp = await this._services.recheckSearch(params, { method: "post" });
         _this.loading = false;
-        const { code, total, data: { result } } = resp;
-        if (parseInt(code, 10) !== 200) {
+        const { code, data} = resp;
+        if (parseInt(code, 10) !== 0) {
           _this.tools.message(resp.message, "error");
           return;
         }
-        if (result.length === 0) {
+        if (data == null) {
           _this.tools.message("无数据", "warning");
           return;
         }
-        _this.totalNum = total;
+        _this.totalNum = 0;
         // 响应结果处理
-        for (const record of result) {
+        for (const record of data) {
           const convertRecord = {
             id: record.id,
             entryTime: record.data_entry_time,
@@ -1014,26 +1009,27 @@
 
       // 复核状态条件改变
       handleRecheckStatusChange() {
-        const { preRecheckStatus } = this.paramCol;
-        const nameArray = this.recheckStatus
-          .filter(i => preRecheckStatus.includes(i.code))
+        let { recheckStatusList } = this.paramCol;
+        const nameArray = this.allRecheckStatus
+          .filter(i => recheckStatusList.includes(i.code))
           .map(item => item.name);
+
         this.paramCol.recheckStatusName = [...nameArray].toString() || "全部";
       },
       // 审核状态条件改变
-      handleManualCheckStatusChange() {
+      handleManualCheckStatusChange(manualRecheckStatus) {
+        this.paramCol.manualRecheckStatus = manualRecheckStatus;
       },
 
       // 重置
       reset() {
         this.paramCol = {
-          entryTimeRange: [this.tools.timeFormat(new Date(new Date().setHours(0, 0, 0, 0)), "dateTime"), this.tools.timeFormat(new Date(new Date().setHours(23, 59, 59, 0)), "dateTime")],
+          entryTimeRange: [new Date().setHours(0, 0, 0, 0), new Date().setHours(23, 59, 59, 0)],
           recogTimeRange: [],
           recheckStatusName: "全部",
-          preRecheckStatus: [],
-          manualCheckStatusName: "全部",
-          preManualCheckStatus: "",
-          illegalCode: ""
+          recheckStatusList: [],
+          manualCheckStatus: null,
+          illegalCode: null
         };
       },
 
@@ -1073,7 +1069,7 @@
       handleCurrentChange(pagenum) {
         // this.detailInfoIdx = 0;
         this.currentPage = pagenum;
-        this.query();
+        this.search();
       },
 
       // 处理时间格式
