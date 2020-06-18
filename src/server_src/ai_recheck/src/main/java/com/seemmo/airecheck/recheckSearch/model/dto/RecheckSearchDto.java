@@ -23,13 +23,13 @@ public class RecheckSearchDto {
     /**
      * 接入开始/结束时间, unix毫秒时间戳
      */
-    @Min(value = 153002100L, message = "accessStartTime为无效值")
-    @NotBlank(message = "accessStartTime不能为空")
-    private Long accessStartTime;
+    @Min(value = 153002100L, message = "entryStartTime为无效值")
+    @NotBlank(message = "entryStartTime不能为空")
+    private Long entryStartTime;
 
-    @Min(value = 153002100L, message = "accessEndTime为无效值")
-    @NotBlank(message = "accessEndTime不能为空")
-    private Long accessEndTime;
+    @Min(value = 153002100L, message = "entryEndTime为无效值")
+    @NotBlank(message = "entryEndTime不能为空")
+    private Long entryEndTime;
 
     /**
      * 识别开始/结束时间
@@ -72,20 +72,20 @@ public class RecheckSearchDto {
         this.currentPage = currentPage;
     }
 
-    public Long getAccessStartTime() {
-        return accessStartTime;
+    public Long getEntryStartTime() {
+        return entryStartTime;
     }
 
-    public void setAccessStartTime(Long accessStartTime) {
-        this.accessStartTime = accessStartTime;
+    public void setEntryStartTime(Long accessStartTime) {
+        this.entryStartTime = accessStartTime;
     }
 
-    public Long getAccessEndTime() {
-        return accessEndTime;
+    public Long getEntryEndTime() {
+        return entryEndTime;
     }
 
-    public void setAccessEndTime(Long accessEndTime) {
-        this.accessEndTime = accessEndTime;
+    public void setEntryEndTime(Long accessEndTime) {
+        this.entryEndTime = accessEndTime;
     }
 
     public Long getRecogStartTime() {

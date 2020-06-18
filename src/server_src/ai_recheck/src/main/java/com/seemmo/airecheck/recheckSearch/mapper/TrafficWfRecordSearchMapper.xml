@@ -28,7 +28,7 @@
         sdk_car_plate_type AS sdkCarPlateType,
         sdk_plate_rect AS sdkPlateRect
         FROM tb_traffic_wf_record
-        WHERE create_time BETWEEN #{accessStartTime} AND #{accessEndTime}
+        WHERE create_time BETWEEN #{entryStartTime} AND #{entryEndTime}
         <if test="recogStartTime > 153002100L and recogEndTime > 153002100L">
             AND sdk_recog_time BETWEEN #{recogStartTime} AND #{recogEndTime}
         </if>

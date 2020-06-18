@@ -34,6 +34,8 @@ public class RecheckSearchController {
             //搜索数据
             try {
                 List<RecheckSearchData> recheckSearchDataList = recheckSearchService.recheckSearch(recheckSearchDto);
+                response.setData(recheckSearchDataList);
+                System.out.println(response.toString());
             } catch (Exception e) {
                 logger.error(String.format("database operation error: %s", e));
                 return ResponseGenerator.genErrorResp(ExceptionInfo.DATABASE_OPERATION_ERROR);

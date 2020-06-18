@@ -25,9 +25,9 @@ public class RecheckSearchServiceImpl implements RecheckSearchService {
 
     @Override
     public Response astrictSearchTime(RecheckSearchDto recheckSearchDto) {
-        Long accessStartTime = recheckSearchDto.getAccessStartTime();
-        Long accessEndTime = recheckSearchDto.getAccessEndTime();
-        Long apartDays = (accessEndTime - accessStartTime) / DateUtils.DAY_MILLISECONDS;
+        long accessStartTime = recheckSearchDto.getEntryStartTime();
+        long accessEndTime = recheckSearchDto.getEntryEndTime();
+        long apartDays = (accessEndTime - accessStartTime) / DateUtils.DAY_MILLISECONDS;
         if (apartDays > BaseConstant.CONST31) {
             return ResponseGenerator.genErrorResp(ExceptionInfo.SEARCH_TIME_INTERVAL_OUT);
         } else {

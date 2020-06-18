@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 public class Response<T> {
     private int code;
     private String message;
-    private T data;
+    private T data = null;
 
     public Response setCode(int resultCode) {
         this.code = resultCode;
