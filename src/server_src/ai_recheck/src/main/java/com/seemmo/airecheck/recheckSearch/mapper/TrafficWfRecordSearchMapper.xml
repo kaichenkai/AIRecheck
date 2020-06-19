@@ -16,14 +16,14 @@
         illegal_code AS illegalCode,
         img_url AS imgUrl,
         img_path AS imgPath,
-        manual_recheck_status AS manualReCheckStatus,
+        manual_check_status AS manualCheckStatus,
         entry_person AS entryPerson,
         report_status AS reportStatus,
         report_time AS reportTime,
         sdk_recog_time AS sdkRecogTime,
         sdk_recog_status AS sdkRecogStatus,
         sdk_recog_data AS sdkRecogData,
-        sdk_recheck_status AS sdkRecheckStatus,
+        sdk_recheck_code AS sdkRecheckCode,
         sdk_car_plate_number AS sdkCarPlateNumber,
         sdk_car_plate_type AS sdkCarPlateType,
         sdk_plate_rect AS sdkPlateRect
@@ -32,18 +32,64 @@
         <if test="recogStartTime > 153002100L and recogEndTime > 153002100L">
             AND sdk_recog_time BETWEEN #{recogStartTime} AND #{recogEndTime}
         </if>
-        <if test="recheckStatusList != null and recheckStatusList.size() > 0">
+        <if test="recheckCodeList != null and recheckCodeList.size() > 0">
             AND sdk_recheck_status IN
-            <foreach item="item" index="index" collection="recheckStatusList"
+            <foreach item="item" index="index" collection="recheckCodeList"
                      open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
-        <if test="manualRecheckStatus != null">
-            AND manual_recheck_status = #{manualRecheckStatus}
+        <if test="manualCheckStatus != null">
+            AND manual_check_status = #{manualCheckStatus}
         </if>
     </select>
 
+    <select id="recheckExportSearch"
+            parameterType="com.seemmo.airecheck.recheckSearch.model.dto.RecheckResultExportDto"
+            resultType="com.seemmo.airecheck.recheckSearch.model.RecheckResultExportData">
+        SELECT
+        create_time AS createTime,
+        id,
+        record_id AS recordId,
+        car_plate_type AS carPlateType,
+        car_plate_number AS carPlateNumber,
+        illegal_code AS illegalCode,
+        img_url AS imgUrl,
+        img_path AS imgPath,
+        manual_check_status AS manualCheckStatus,
+        entry_person AS entryPerson,
+        report_status AS reportStatus,
+        report_time AS reportTime,
+        sdk_recog_time AS sdkRecogTime,
+        sdk_recog_status AS sdkRecogStatus,
+        sdk_recog_data AS sdkRecogData,
+        sdk_recheck_code AS sdkRecheckCode,
+        sdk_car_plate_number AS sdkCarPlateNumber,
+        sdk_car_plate_type AS sdkCarPlateType,
+        sdk_plate_rect AS sdkPlateRect
+        FROM tb_traffic_wf_record
+        WHERE create_time BETWEEN #{entryStartTime} AND #{entryEndTime}
+        <if test="recogStartTime > 153002100L and recogEndTime > 153002100L">
+            AND sdk_recog_time BETWEEN #{recogStartTime} AND #{recogEndTime}
+        </if>
+        <if test="recheckCodeList != null and recheckCodeList.size() > 0">
+            AND sdk_recheck_status IN
+            <foreach item="item" index="index" collection="recheckCodeList"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="manualCheckStatus != null">
+            AND manual_check_status = #{manualCheckStatus}
+        </if>
+        <if test="recordIds != null and recordIds.size() > 0">
+            AND id IN
+            <foreach item="item" index="index" collection="recordIds"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
 </mapper>
 
 

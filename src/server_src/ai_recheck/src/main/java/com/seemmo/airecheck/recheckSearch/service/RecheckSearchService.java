@@ -13,5 +13,5 @@ import java.util.List;
 public interface RecheckSearchService {
     public Response astrictSearchTime(RecheckSearchDto recheckSearchDto);
 
-    public List<RecheckSearchData> recheckSearch(RecheckSearchDto recheckSearchDto);
+    public List<RecheckSearchData> search(RecheckSearchDto recheckSearchDto);
 }

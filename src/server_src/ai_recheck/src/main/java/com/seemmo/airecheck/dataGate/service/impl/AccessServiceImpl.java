@@ -54,7 +54,7 @@ public class AccessServiceImpl implements AccessService {
         } catch (Exception e) {
             logger.error(String.format("image download abnormal, url: %s, error: %s", imgUrl, e));
             ExceptionInfo exceptionInfo = ExceptionInfo.IMAGE_URL_INVALID;
-            return ResponseGenerator.genFailResp(exceptionInfo.code, String.format(exceptionInfo.message, recordId, imgUrl));
+            return ResponseGenerator.genErrorResp(exceptionInfo.code, String.format(exceptionInfo.message, recordId, imgUrl));
         }
         //保存图片,根据违法时间分目录存储
         String illegalDate = DateUtils.formatTimeToYMD(recordObj.getIllegalTime());

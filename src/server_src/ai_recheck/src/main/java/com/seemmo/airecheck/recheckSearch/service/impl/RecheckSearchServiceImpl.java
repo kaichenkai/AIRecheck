@@ -18,7 +18,7 @@ import java.util.List;
  * @author: kaichenkai
  * @create: 6/9/2020 17:30
  */
-@Service("recheckSearch")
+@Service
 public class RecheckSearchServiceImpl implements RecheckSearchService {
     @Autowired
     private TrafficWfRecordSearchMapper trafficWfRecordSearchMapper;
@@ -36,7 +36,7 @@ public class RecheckSearchServiceImpl implements RecheckSearchService {
     }
 
     @Override
-    public List<RecheckSearchData> recheckSearch(RecheckSearchDto recheckSearchDto) {
+    public List<RecheckSearchData> search(RecheckSearchDto recheckSearchDto) {
         return trafficWfRecordSearchMapper.recheckSearch(recheckSearchDto);
     }
 }

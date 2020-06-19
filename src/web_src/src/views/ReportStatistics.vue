@@ -75,7 +75,7 @@
                 <el-col
                         :style="{width:hideCondition?'100%':' calc(100% - 360px)'}"
                         class="table-style right-part"
-                        v-show="queryData.length !== 0"
+                        v-show="searchData.length !== 0"
                 >
                     <el-row style="height:62px;line-height:62px;background:#fff;border-bottom: 1px solid #ebecec;margin-left: 20px;">
                         <span class="search-result-total">符合条件条件目标 {{totalNum}} 个</span>
@@ -112,7 +112,7 @@
                     <el-row class="table-list">
                         <div style="height: 100%;" v-show="isTableStyle">
                             <el-table
-                                    :data="queryData"
+                                    :data="searchData"
                                     v-loading="loading"
                                     element-loading-text="正在查询..."
                                     class="element-table-reset"
@@ -209,7 +209,7 @@
                         </div>
                     </el-row>
                 </el-col>
-                <el-col :span="19" v-show="queryData.length === 0" class="empty-wrap" key="empty">
+                <el-col :span="19" v-show="searchData.length === 0" class="empty-wrap" key="empty">
                     <img src="@/assets/img/empty.png" alt="empty"/>
                 </el-col>
 
@@ -251,7 +251,7 @@
         },
 
         // 页面数据
-        queryData: [],
+        searchData: [],
         totalNum: 0,
         pageSize: 24,
         currentPage: 1,
@@ -332,7 +332,7 @@
       //查询数据
       async search() {
         let _this = this;
-        _this.queryData = [];//清空数据
+        _this.searchData = [];//清空数据
         this.loading = true;
         const { entryTimeRange: [entryStartTime, entryEndTime] } = this.paramCol;
         const { preManualCheckStatus } = this.paramCol;
@@ -355,7 +355,7 @@
           return;
         }
         if (result.length === 0) {
-          _this.queryData = [];
+          _this.searchData = [];
           _this.tools.message("无数据", "warning");
           return;
         }
@@ -374,10 +374,10 @@
             recallRate: record.recall,
             detectionRate: record.jianchu
           };
-          _this.queryData.push(convertRecord);
+          _this.searchData.push(convertRecord);
         }
         // 统计数据
-        _this.queryData.push({
+        _this.searchData.push({
           officeName: "总计",
           entryNum: data.inserts,
           analyzeNum: data.ana_counts,
@@ -416,7 +416,7 @@
         const { entryTimeRange: [entryStartTime, entryEndTime] } = this.paramCol;
         const { preManualCheckStatus } = this.paramCol;
         // 是否有数据
-        if (this.queryData.length <= 0) {
+        if (this.searchData.length <= 0) {
           this.tools.message("请先查询数据", "info");
           return;
         }

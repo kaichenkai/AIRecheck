@@ -59,18 +59,17 @@
                             ></el-date-picker>
                         </el-form-item>
 
-                        <el-form-item label="复核状态" class="width-fix">
+                        <el-form-item label="复核结果" class="width-fix">
                             <el-popover placement="bottom" width="430" trigger="click">
                                 <el-row class="m-t-10 check-status">
-                                    <!--                                    <el-col :span="5" class="l-h-32">复核状态:</el-col>-->
                                     <el-col :span="24">
                                         <el-checkbox-group
-                                                v-model="paramCol.recheckStatusList"
+                                                v-model="paramCol.recheckCodeList"
                                                 size="small"
-                                                @change="handleRecheckStatusChange"
+                                                @change="handleRecheckCodeChange"
                                         >
                                             <el-checkbox-button
-                                                    v-for="item in allRecheckStatus"
+                                                    v-for="item in allRecheckCode"
                                                     :key="item.code"
                                                     :label="item.code"
                                             >{{item.name}}
@@ -81,7 +80,7 @@
                                 <el-input
                                         slot="reference"
                                         size="small"
-                                        v-model="paramCol.recheckStatusName"
+                                        v-model="paramCol.recheckResultName"
                                         readonly
                                 ></el-input>
                             </el-popover>
@@ -127,7 +126,7 @@
                 <el-col
                         :style="{width:hideCondition?'100%':' calc(100% - 360px)'}"
                         class="table-style right-part"
-                        v-show="queryData.length !== 0"
+                        v-show="searchData.length !== 0"
                 >
                     <el-row style="height:62px;line-height:62px;background:#fff;border-bottom: 1px solid #ebecec;margin-left: 20px;">
                         <span class="search-result-total">符合条件条件目标 {{totalNum}} 个</span>
@@ -146,56 +145,57 @@
                                 <el-col style="text-align:center;">
                                     <el-row>
                                         <el-checkbox
-                                                v-model="onExcelCheck"
-                                                @change="(...arg)=>{exportLimit('onExcelCheck',...arg)}"
+                                                style="margin-bottom: 10px"
+                                                v-model="onExportExcel"
+                                                @change="this.onExportExcel=!onExportExcel"
                                         >仅导出表格
                                         </el-checkbox>
-                                        <el-checkbox
-                                                v-model="applyExportRule"
-                                                @change="(...arg)=>{exportLimit('applyExportRule',...arg)}"
-                                        >应用导出规则
-                                        </el-checkbox>
+<!--                                        <el-checkbox-->
+<!--                                                v-model="applyExportRule"-->
+<!--                                                @change="(...arg)=>{exportLimit('applyExportRule',...arg)}"-->
+<!--                                        >应用导出规则-->
+<!--                                        </el-checkbox>-->
                                     </el-row>
                                     <el-row style="margin:5px">
                                         <el-button
                                                 size="small"
                                                 :loading="exportLoading==='select'"
                                                 :disabled="exportLoading==='select'"
-                                                @click="outputIllegal('select')"
+                                                @click="outputRecord('select')"
                                         >导出勾选
                                         </el-button>
                                         <el-button
                                                 size="small"
                                                 :loading="exportLoading==='all'"
                                                 :disabled="exportLoading==='all'"
-                                                @click="outputIllegal('all')"
+                                                @click="outputRecord('all')"
                                         >导出全部
                                         </el-button>
                                     </el-row>
 
-                                    <el-row style="margin:5px">
-                                        <el-input-number
-                                                size="small"
-                                                :precision="0"
-                                                v-model="exportNum"
-                                                :min="1"
-                                                :max="totalNum"
-                                                label="输入导出条目"
-                                        ></el-input-number>
-                                        <el-tooltip
-                                                class="item"
-                                                effect="dark"
-                                                content="自定义导出条数"
-                                                placement="bottom"
-                                        >
-                                            <el-button
-                                                    size="small"
-                                                    :loading="exportLoading==='number'"
-                                                    @click="outputIllegal('number')"
-                                            >导出
-                                            </el-button>
-                                        </el-tooltip>
-                                    </el-row>
+<!--                                    <el-row style="margin:5px">-->
+<!--                                        <el-input-number-->
+<!--                                                size="small"-->
+<!--                                                :precision="0"-->
+<!--                                                v-model="exportNum"-->
+<!--                                                :min="1"-->
+<!--                                                :max="totalNum"-->
+<!--                                                label="输入导出条目"-->
+<!--                                        ></el-input-number>-->
+<!--                                        <el-tooltip-->
+<!--                                                class="item"-->
+<!--                                                effect="dark"-->
+<!--                                                content="自定义导出条数"-->
+<!--                                                placement="bottom"-->
+<!--                                        >-->
+<!--                                            <el-button-->
+<!--                                                    size="small"-->
+<!--                                                    :loading="exportLoading==='number'"-->
+<!--                                                    @click="outputIllegal('number')"-->
+<!--                                            >导出-->
+<!--                                            </el-button>-->
+<!--                                        </el-tooltip>-->
+<!--                                    </el-row>-->
                                     <el-row
                                             v-show="exportProcess>0&&exportProcess<=100"
                                     >打包进度:{{exportProcess}}%
@@ -211,7 +211,7 @@
                         <!--列表模式-->
                         <div style="height: 100%;" v-show="isTableStyle">
                             <el-table
-                                    :data="queryData"
+                                    :data="searchData"
                                     v-loading="loading"
                                     element-loading-text="正在查询..."
                                     class="element-table-reset"
@@ -233,25 +233,22 @@
                                         label="序号"
                                         :width="tableColumnWidth.sortNum"
                                 ></el-table-column>
-                                <!--                                prop="entryTime"-->
-                                <!--                                                                        :width="tableColumnWidth.entryTime"-->
                                 <el-table-column
-                                        prop="entryTime"
+                                        prop="createTime"
                                         align="left"
                                         label="录入时间"
                                         show-overflow-tooltip
+                                        :formatter="formatterTime"
+                                        :width="tableColumnWidth.entryTime"
                                 ></el-table-column>
-                                <!--                                prop="sdkRecogTime"-->
-                                <!--                                :formatter="formatterTime"-->
-                                <!--                                :width="tableColumnWidth.sdkRecogTime"-->
                                 <el-table-column
                                         prop="sdkRecogTime"
                                         align="left"
                                         show-overflow-tooltip
                                         label="识别时间"
-
+                                        :formatter="formatterTime"
+                                        :width="tableColumnWidth.recogTime"
                                 ></el-table-column>
-                                <!--                                prop="sdkCarPlateNumber"-->
                                 <el-table-column
                                         prop="sdkCarPlateNumber"
                                         align="left"
@@ -259,24 +256,21 @@
                                         show-overflow-tooltip
                                         :width="tableColumnWidth.sdkCarPlateNumber"
                                 ></el-table-column>
-                                <!--                                prop="srcCarPlateNumber"-->
                                 <el-table-column
-                                        prop="srcCarPlateNumber"
+                                        prop="carPlateNumber"
                                         align="left"
                                         label="原始号牌号码"
                                         show-overflow-tooltip
                                         :width="tableColumnWidth.srcCarPlateNumber"
                                 ></el-table-column>
-                                <!--                                prop="sdkReasonCode"-->
                                 <el-table-column
-                                        prop="sdkReasonCode"
-                                        :formatter="formatterSdkReasonCode"
+                                        prop="sdkRecheckCode"
+                                        :formatter="formatterSdkRecheckCode"
                                         align="left"
-                                        label="识别结果"
+                                        label="复核结果"
                                         show-overflow-tooltip
-                                        :width="tableColumnWidth.sdkReasonCode"
+                                        :width="tableColumnWidth.sdkRecheckCode"
                                 ></el-table-column>
-                                <!--                                prop="manualCheckStatus"-->
                                 <el-table-column
                                         prop="manualCheckStatus"
                                         align="left"
@@ -309,7 +303,7 @@
                         <!--卡片模式-->
                         <!--                        <div style="height: 100%;" v-show="!isTableStyle">-->
                         <!--                            <SearchResult-->
-                        <!--                                    :queryData="queryData"-->
+                        <!--                                    :searchData="searchData"-->
                         <!--                                    :SearchResultOpt="SearchResultOpt"-->
                         <!--                                    ref="searchResult"-->
                         <!--                                    :multipleSelection="multipleSelection"-->
@@ -324,7 +318,7 @@
                         <!--                        </div>-->
                     </el-row>
                 </el-col>
-                <el-col :span="19" v-show="queryData.length === 0" class="empty-wrap" key="empty">
+                <el-col :span="19" v-show="searchData.length === 0" class="empty-wrap" key="empty">
                     <img src="@/assets/img/empty.png" alt="empty"/>
                 </el-col>
 
@@ -402,8 +396,8 @@
                                         <el-col :span="18">{{dialogData.sdkCarPlateNumber}}</el-col>
                                     </el-col>
                                     <el-col :span="8">
-                                        <el-col :span="6" class="d-title">识别结果：</el-col>
-                                        <el-col :span="18">{{handleSdkReasonCode(dialogData.sdkReasonCode)}}
+                                        <el-col :span="6" class="d-title">复核结果：</el-col>
+                                        <el-col :span="18">{{handleSdkReasonCode(dialogData.sdkRecheckCode)}}
                                         </el-col>
                                     </el-col>
                                 </el-row>
@@ -475,7 +469,7 @@
                                 type="primary"
                                 icon="el-icon-arrow-right"
                                 circle
-                                :disabled="detailInfoIdx>=queryData.length-1"
+                                :disabled="detailInfoIdx>=searchData.length-1"
                         ></el-button>
                     </el-tooltip>
                 </el-col>
@@ -501,13 +495,14 @@
   import {
     allManualCheckStatus,
     manualCheckStatusMap,
-    allRecheckStatus,
-    recheckStatusMap,
+    allRecheckCode,
+    recheckCodeMap,
     tableColumnWidth
   } from "../common/dataCustom";
 
   const moment = require("moment");
-  import Carousel from "../components/carousel"
+  import Carousel from "../components/carousel";
+
   export default {
     name: "RecheckSearch",
     components: {
@@ -515,7 +510,7 @@
     },
     data() {
       return {
-        allRecheckStatus, //所有复核状态
+        allRecheckCode, //所有复核结果
         allManualCheckStatus, //所有审核状态
         tableColumnWidth,  //表格列宽度
 
@@ -523,10 +518,10 @@
         labelPosition: "top",
         hideCondition: false,//跳转过来隐藏条件
         isList: true,
-        isTableStyle: true, // true: 以表格形式展示, false: 以 medium icons 形式展示
-        onExcelCheck: false, //仅导出表格
-        applyExportRule: false, //应用导出规则
-        exportNum: 1, // 导出条数
+        isTableStyle: true,// true: 以表格形式展示, false: 以 medium icons 形式展示
+        onExportExcel: true,//仅导出表格
+        // applyExportRule: false,//应用导出规则
+        // exportNum: 1,// 导出条数
         exportProcess: 0,//打包进度
         exportLoading: false,
         loading: false,//加载状态
@@ -548,16 +543,16 @@
         // 请求参数
         paramCol: {
           // 录入时间, 识别时间
-          entryTimeRange: [new Date(1585732024000).setHours(0, 0, 0, 0), new Date(1588151224000).setHours(23, 59, 59, 0)],
+          entryTimeRange: [new Date(1591777708100).setHours(0, 0, 0, 0), new Date(1591777722999).setHours(23, 59, 59, 0)],
           recogTimeRange: [],
-          recheckStatusName: "全部",      // 复核
-          recheckStatusList: [],
+          recheckResultName: "全部",//复核结果
+          recheckCodeList: [],
           manualCheckStatus: null,
-          illegalCode: null                // 违法类型编码
+          illegalCode: null//违法类型编码
         },
 
         // 页面数据
-        queryData: [],
+        searchData: [],
         totalNum: 0,
         pageSize: 24,
         currentPage: 1,
@@ -674,145 +669,118 @@
       //查询数据
       async search() {
         let _this = this;
-        _this.queryData = [];//清空数据
-        this.loading = true;
-        const { entryTimeRange: [entryStartTime, entryEndTime], recogTimeRange: [recogStartTime, recogEndTime] } = this.paramCol;
-        const { recheckStatusList, manualCheckStatus, illegalCode } = this.paramCol;
-        const { pageSize, currentPage } = this;
+        _this.searchData = [];//清空数据
+        _this.loading = true;
+        const { entryTimeRange: [entryStartTime, entryEndTime], recogTimeRange: [recogStartTime, recogEndTime] } = _this.paramCol;
+        const { recheckCodeList, manualCheckStatus, illegalCode } = _this.paramCol;
+        const { pageSize, currentPage } = _this;
         // 拼接参数
         let params = {
           pageSize,
           currentPage,
           entryStartTime,
           entryEndTime,
-          recogStartTime,  // 时间戳 1234567890123
-          recogEndTime, // 时间戳 1234567890123
-          recheckStatusList,
+          recogStartTime,// 时间戳 1234567890123
+          recogEndTime,// 时间戳 1234567890123
+          recheckCodeList,
           manualCheckStatus,
           illegalCode
         };
-        const resp = await this._services.recheckSearch(params, { method: "post" });
+        const resp = await _this._services.recheckSearch(params, { method: "post" });
         _this.loading = false;
-        const { code, data} = resp;
+        const { code, data: { recheckDataList, totalNum } } = resp;
         if (parseInt(code, 10) !== 0) {
           _this.tools.message(resp.message, "error");
           return;
         }
-        if (data == null) {
+        if (recheckDataList.length <= 0) {
           _this.tools.message("无数据", "warning");
           return;
         }
-        _this.totalNum = 0;
-        // 响应结果处理
-        for (const record of data) {
-          const convertRecord = {
-            id: record.id,
-            entryTime: record.data_entry_time,
-            recordId: record.src_record_id,
-            manualCheckStatus: record.manual_check_status,
-            srcCarPlateNumber: record.src_car_plate_number,
-            srcCatPlateType: record.src_car_plate_type,
-            srcIllegalCode: record.src_illegal_action,
-
-            sdkCarPlateNumber: record.sdk_car_plate_number,
-            sdkCarPlateType: record.sdk_car_plate_type,
-            sdkPlateRect: record.sdk_plate_rect,
-            sdkReasonCode: record.sdk_reason_code,
-            sdkRecogTime: record.sdk_recog_time,
-            sdkRecogStatus: record.recog_status,
-
-            sdkPlateScores: record.plate_scores,
-            carNumPicPath: record.car_num_pic_path,
-            carNumPicUrl: record.car_num_pic_url,
-            entryPerson: record.entry_person,
-
-            reportStatus: record.report_status,
-            reportTime: record.report_time
-          };
-          _this.queryData.push(convertRecord);
-        }
-
-
-        // 合成图放在首位，车牌特写图放在末尾
-        // for (let i = 0; i < _this.queryData.length; i++) {
-        //   if (_this.queryData[i].imageIdList) {
-        //     if (_this.queryData[i].combinedPicId) {
-        //       _this.queryData[i].imageIdList.unshift(
-        //         _this.queryData[i].combinedPicId
-        //       );
-        //     }
-        //     if (_this.queryData[i].carNumPicId) {
-        //       _this.queryData[i].imageIdList.push(
-        //         _this.queryData[i].carNumPicId
-        //       );
-        //     }
-        //   }
-        // }
-        // 定时器
-        // setTimeout(() => {
-        //   let selectedData = _this.getSelectedData;
-        //
-        //   if (selectedData.length > 0) {
-        //     if (!_this.isTableStyle) {
-        //       _this.$refs.searchResult.getPageChange(
-        //         _this.currentPage
-        //       );
-        //       _this.$refs.searchResult.checkedItems = [];
-        //       if (selectedData[_this.currentPage - 1]) {
-        //         selectedData[_this.currentPage - 1].map(
-        //           i => {
-        //             _this.queryData.map(data => {
-        //               if (data.id === i) {
-        //                 _this.$refs.searchResult.checkedItems.push(
-        //                   i
-        //                 );
-        //               }
-        //             });
-        //           }
-        //         );
-        //         if (
-        //           _this.$refs.searchResult.checkedItems
-        //             .length === _this.queryData.length
-        //         ) {
-        //           _this.$refs.searchResult.allCheck = true;
-        //         }
-        //       }
-        //     } else {
-        //       _this.$refs.multipleTable.selection.splice(
-        //         0,
-        //         _this.$refs.multipleTable.selection.length
-        //       );
-        //       _this.multipleSelection = [];
-        //       if (selectedData[_this.currentPage - 1]) {
-        //         selectedData[_this.currentPage - 1].map(
-        //           i => {
-        //             _this.queryData.map(data => {
-        //               if (data.id === i) {
-        //                 _this.$refs.multipleTable.store.states.selection.push(
-        //                   data
-        //                 );
-        //                 _this.multipleSelection.push(
-        //                   i
-        //                 );
-        //               }
-        //             });
-        //           }
-        //         );
-        //       }
-        //       if (
-        //         _this.multipleSelection.length ===
-        //         _this.queryData.length
-        //       ) {
-        //         _this.$refs.multipleTable.store.states.isAllSelected = true;
-        //       }
-        //     }
-        //   }
-        // }, 200);
+        _this.totalNum = totalNum;
+        _this.searchData = recheckDataList;
       },
+
+
+      // 合成图放在首位，车牌特写图放在末尾
+      // for (let i = 0; i < _this.searchData.length; i++) {
+      //   if (_this.searchData[i].imageIdList) {
+      //     if (_this.searchData[i].combinedPicId) {
+      //       _this.searchData[i].imageIdList.unshift(
+      //         _this.searchData[i].combinedPicId
+      //       );
+      //     }
+      //     if (_this.searchData[i].carNumPicId) {
+      //       _this.searchData[i].imageIdList.push(
+      //         _this.searchData[i].carNumPicId
+      //       );
+      //     }
+      //   }
+      // }
+      // 定时器
+      // setTimeout(() => {
+      //   let selectedData = _this.getSelectedData;
+      //
+      //   if (selectedData.length > 0) {
+      //     if (!_this.isTableStyle) {
+      //       _this.$refs.searchResult.getPageChange(
+      //         _this.currentPage
+      //       );
+      //       _this.$refs.searchResult.checkedItems = [];
+      //       if (selectedData[_this.currentPage - 1]) {
+      //         selectedData[_this.currentPage - 1].map(
+      //           i => {
+      //             _this.searchData.map(data => {
+      //               if (data.id === i) {
+      //                 _this.$refs.searchResult.checkedItems.push(
+      //                   i
+      //                 );
+      //               }
+      //             });
+      //           }
+      //         );
+      //         if (
+      //           _this.$refs.searchResult.checkedItems
+      //             .length === _this.searchData.length
+      //         ) {
+      //           _this.$refs.searchResult.allCheck = true;
+      //         }
+      //       }
+      //     } else {
+      //       _this.$refs.multipleTable.selection.splice(
+      //         0,
+      //         _this.$refs.multipleTable.selection.length
+      //       );
+      //       _this.multipleSelection = [];
+      //       if (selectedData[_this.currentPage - 1]) {
+      //         selectedData[_this.currentPage - 1].map(
+      //           i => {
+      //             _this.searchData.map(data => {
+      //               if (data.id === i) {
+      //                 _this.$refs.multipleTable.store.states.selection.push(
+      //                   data
+      //                 );
+      //                 _this.multipleSelection.push(
+      //                   i
+      //                 );
+      //               }
+      //             });
+      //           }
+      //         );
+      //       }
+      //       if (
+      //         _this.multipleSelection.length ===
+      //         _this.searchData.length
+      //       ) {
+      //         _this.$refs.multipleTable.store.states.isAllSelected = true;
+      //       }
+      //     }
+      //   }
+      // }, 200);
 
       //弹出详情
       async popDetail(row) {
-        this.detailInfoIdx = this.queryData.findIndex(item => item.id === row.id);
+        this.detailInfoIdx = this.searchData.findIndex(item => item.id === row.id);
 
         this.$refs["multipleTable"].setCurrentRow(row);//标识列表模式下当前项
         // this.$refs["searchResult"].parentToggle(this.detailInfoIdx);//标识卡片模式下当前项
@@ -829,13 +797,13 @@
           }
         );
         // 识别
-        const recheckStatusName = recogStatusMap[sdkRecogStatus];
-        if (recheckStatusName) {
+        const recheckResultName = recogStatusMap[sdkRecogStatus];
+        if (recheckResultName) {
           this.stepsList.push(
             {
               title: "AI复核",
               description:
-                `${recheckStatusName}\n${sdkRecogTime}`
+                `${recheckResultName}\n${sdkRecogTime}`
             }
           );
         }
@@ -1007,18 +975,18 @@
         //     });
       },
 
-      // 复核状态条件改变
-      handleRecheckStatusChange() {
-        let { recheckStatusList } = this.paramCol;
-        const nameArray = this.allRecheckStatus
-          .filter(i => recheckStatusList.includes(i.code))
+      //复核结果编码条件改变
+      handleRecheckCodeChange() {
+        let { recheckCodeList } = this.paramCol;
+        const nameArray = this.allRecheckCode
+          .filter(i => recheckCodeList.includes(i.code))
           .map(item => item.name);
 
-        this.paramCol.recheckStatusName = [...nameArray].toString() || "全部";
+        this.paramCol.recheckResultName = [...nameArray].toString() || "全部";
       },
       // 审核状态条件改变
-      handleManualCheckStatusChange(manualRecheckStatus) {
-        this.paramCol.manualRecheckStatus = manualRecheckStatus;
+      handleManualCheckStatusChange(manualCheckStatus) {
+        this.paramCol.manualCheckStatus = manualCheckStatus;
       },
 
       // 重置
@@ -1026,8 +994,8 @@
         this.paramCol = {
           entryTimeRange: [new Date().setHours(0, 0, 0, 0), new Date().setHours(23, 59, 59, 0)],
           recogTimeRange: [],
-          recheckStatusName: "全部",
-          recheckStatusList: [],
+          recheckResultName: "全部",
+          recheckCodeList: [],
           manualCheckStatus: null,
           illegalCode: null
         };
@@ -1056,7 +1024,7 @@
         this.multipleSelection = [];
         this.$refs.multipleTable.clearSelection();
         val.map(i => {
-          this.queryData.map(data => {
+          this.searchData.map(data => {
             if (data.id === i) {
               this.$refs.multipleTable.toggleRowSelection(data, true);
             }
@@ -1074,37 +1042,37 @@
 
       // 处理时间格式
       formatterTime(row, column, cellValue) {
-        return this.timeFormat(cellValue, "dateTime");
-      },
-      timeFormat(val, type) {
-        return this.tools.timeFormat(val, type);
+        if (cellValue == null) {
+          return ""
+        }
+        return this.tools.timeFormat(cellValue, "dateTime");
       },
 
-      // 处理识别结果编码
-      formatterSdkReasonCode(row, column, cellValue) {
-        return recheckStatusMap[cellValue];
+      //处理复核结果编码
+      formatterSdkRecheckCode(row, column, cellValue) {
+        return recheckCodeMap[cellValue];
       },
       handleSdkReasonCode(sdkReasonCode) {
-        return recheckStatusMap[sdkReasonCode];
+        return recheckCodeMap[sdkReasonCode];
       },
 
-      // 处理审核状态编码
+      //处理审核状态编码
       formatterManualCheckStatus(row, column, cellValue) {
         return manualCheckStatusMap[cellValue];
       },
 
-      // 详情信息切换
+      //详情信息切换
       detailInfoToggle(type) {
         const nextIdx = type === "next" ? this.detailInfoIdx + 1 : this.detailInfoIdx - 1;
         // nextIdx 超出范围时关闭对话框
-        if (nextIdx < 0 || nextIdx >= this.queryData.length) {
+        if (nextIdx < 0 || nextIdx >= this.searchData.length) {
           this.detailVisible = false;
         } else {
-          this.popDetail(this.queryData[nextIdx]);
+          this.popDetail(this.searchData[nextIdx]);
         }
       },
 
-      // 手动审核
+      //手动审核
       async manualCheck(manualCheckStatus) {
         // 拼接参数，兼容 python 后台接口
         let params = {
@@ -1117,7 +1085,7 @@
           // 刷新详情页数据
           this.dialogData.manualCheckStatus = manualCheckStatus;
           // 刷新表格中数据
-          for (const record of this.queryData) {
+          for (const record of this.searchData) {
             if (record.id === this.dialogData.id) {
               record.manualCheckStatus = manualCheckStatus;
             }
@@ -1127,9 +1095,49 @@
           // 跳转到下一条
           this.detailInfoToggle("next");
         }
+      },
+
+      //导出数据
+      outputRecord(option){
+        console.log(option);
+        console.log(this.onExportExcel);
+        console.log(this.multipleSelection);
+
+        let _this = this;
+        let params = {};
+        const { entryTimeRange: [entryStartTime, entryEndTime], recogTimeRange: [recogStartTime, recogEndTime] } = _this.paramCol;
+        const { recheckCodeList, manualCheckStatus, illegalCode } = _this.paramCol;
+        if (option === 'select') {
+          if (this.multipleSelection.length === 0) {
+            this.tools.message("请勾选数据", "info");
+            return
+          }
+        }
+
+        // 拼接参数
+        params = {
+          entryStartTime,
+          entryEndTime,
+          recogStartTime,  // 时间戳 1234567890123
+          recogEndTime, // 时间戳 1234567890123
+          recheckCodeList,
+          manualCheckStatus,
+          illegalCode,
+          recordIds: this.multipleSelection,
+        };
+        this.exportLoading = option;//显示进度条
+        params.onlyExcel = _this.onExportExcel;
+        this._services.recheckResultExport(params, { method: "post" }).then(resp => {
+          this.exportLoading = false;
+          if (parseInt(resp.code, 10) !== 0) {
+            this.tools.message(resp.message || "未知错误", "warning")
+          } else {
+            this.tools.message("导出完成", "success")
+          }
+        })
       }
     }
-  };
+  }
 </script>
 
 <style lang="less" scoped>

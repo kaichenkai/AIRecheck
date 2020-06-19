@@ -16,7 +16,7 @@
 // };
 
 // 复核状态(查询选项展示)
-const allRecheckStatus = [
+const allRecheckCode = [
   { name: "车牌更正", code: 1 },
   { name: "疑似", code: 2 },
   { name: "模糊", code: 3 },
@@ -24,7 +24,8 @@ const allRecheckStatus = [
   { name: "未匹配到车", code: 5 }
 ];
 // 复核状态字典(编码映射)
-const recheckStatusMap = {
+const recheckCodeMap = {
+  null: "正常",
   0: "正常",
   1: "车牌更正",
   2: "疑似",
@@ -56,8 +57,8 @@ const tableColumnWidth = {
   recogTime: 200,//识别时间
   sdkCarPlateNumber: 150,//识别号牌号码
   srcCarPlateNumber: 150,//原始号牌号码
-  sdkReasonCode: 150,//识别结果
-  manualCheckStatus: 100,//人工审核状态
+  sdkRecheckCode: 150,//复核状态
+  manualCheckStatus: 100,//手动审核状态
   detailIcon: 50,//详情图标
 
   // 通报统计页面
@@ -81,7 +82,7 @@ const tableColumnWidth = {
 };
 
 export {
-  allRecheckStatus, allManualCheckStatus, recheckStatusMap, manualCheckStatusMap, tableColumnWidth
+  allRecheckCode, allManualCheckStatus, recheckCodeMap, manualCheckStatusMap, tableColumnWidth
 };
 
 // //预审状态(正废)

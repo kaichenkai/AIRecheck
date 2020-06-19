@@ -1,6 +1,8 @@
 package com.seemmo.airecheck.recheckSearch.mapper;
 
+import com.seemmo.airecheck.recheckSearch.model.RecheckResultExportData;
 import com.seemmo.airecheck.recheckSearch.model.RecheckSearchData;
+import com.seemmo.airecheck.recheckSearch.model.dto.RecheckResultExportDto;
 import com.seemmo.airecheck.recheckSearch.model.dto.RecheckSearchDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -17,4 +19,6 @@ import java.util.List;
 @Mapper
 public interface TrafficWfRecordSearchMapper {
     List<RecheckSearchData> recheckSearch(RecheckSearchDto recheckSearchDto);
+
+    List<RecheckResultExportData> recheckExportSearch(RecheckResultExportDto recheckResultExportDto);
 }

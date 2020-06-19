@@ -1,12 +1,10 @@
 package com.seemmo.airecheck.recheckSearch.model;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 /**
  * @author: kaichenkai
  * @create: 6/9/2020 20:03
  */
-public class RecheckSearchData {
+public class RecheckResultExportData {
     private Long createTime;
     private Integer id;
     private String recordId;
@@ -178,5 +176,30 @@ public class RecheckSearchData {
 
     public void setSdkPlateRect(String sdkPlateRect) {
         this.sdkPlateRect = sdkPlateRect;
+    }
+
+    @Override
+    public String toString() {
+        return "RecheckResultExportData{" +
+                "createTime=" + createTime +
+                ", id=" + id +
+                ", recordId='" + recordId + '\'' +
+                ", carPlateType='" + carPlateType + '\'' +
+                ", carPlateNumber='" + carPlateNumber + '\'' +
+                ", illegalCode='" + illegalCode + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", imgPath='" + imgPath + '\'' +
+                ", manualCheckStatus=" + manualCheckStatus +
+                ", entryPerson='" + entryPerson + '\'' +
+                ", reportStatus=" + reportStatus +
+                ", reportTime=" + reportTime +
+                ", sdkRecogTime=" + sdkRecogTime +
+                ", sdkRecogStatus=" + sdkRecogStatus +
+                ", sdkRecogData='" + sdkRecogData + '\'' +
+                ", sdkRecheckCode=" + sdkRecheckCode +
+                ", sdkCarPlateNumber='" + sdkCarPlateNumber + '\'' +
+                ", sdkCarPlateType='" + sdkCarPlateType + '\'' +
+                ", sdkPlateRect='" + sdkPlateRect + '\'' +
+                '}';
     }
 }

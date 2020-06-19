@@ -27,6 +27,11 @@ const commonQuery = {
     recheckSearch(params, axiosParams) {
         return request(urlHttps + '/main/recheckSearch', params, axiosParams, { method: 'post' });
     },
+    //导出复核结果
+    recheckResultExport(params, axiosParams) {
+        return request(urlHttps + '/main/export/recheckResult', params, axiosParams, { method: 'post' });
+    },
+
     //手动审核
     manualCheck(params, axiosParams) {
         return request(urlHttps + '/api/update/manual/status', params, axiosParams, { method: 'patch' });

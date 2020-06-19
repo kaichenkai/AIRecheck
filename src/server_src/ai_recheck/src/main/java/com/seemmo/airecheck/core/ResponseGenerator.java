@@ -36,7 +36,7 @@ public class ResponseGenerator {
                 .setMessage(exceptionInfo.message);
     }
 
-    public static Response genFailResp(int code, String message) {
+    public static Response genErrorResp(int code, String message) {
         return new Response()
                 .setCode(code)
                 .setMessage(message);

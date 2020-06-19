@@ -6,20 +6,10 @@ import java.util.List;
 
 /**
  * @author: kaichenkai
- * @create: 6/9/2020 17:34
- * 复核结果查询请求参数
+ * @create: 6/18/2020 14:29
+ * 导出复核结果请求参数
  */
-public class RecheckSearchDto {
-    /**
-     *页面大小
-     */
-    private Integer pageSize;
-
-    /**
-     * 当前页
-     */
-    private Integer currentPage;
-
+public class RecheckResultExportDto {
     /**
      * 接入开始/结束时间, unix毫秒时间戳
      */
@@ -41,7 +31,7 @@ public class RecheckSearchDto {
     private Long recogEndTime;
 
     /**
-     * 复核结果代码数组
+     * 复核结果代码
      */
     private List<Integer> recheckCodeList;
 
@@ -55,37 +45,31 @@ public class RecheckSearchDto {
      */
     private String illegalCode;
 
+    /**
+     * 已勾选条目的 id 数组
+     */
+    private List<Integer> recordIds;
+
+    /**
+     * 导出 excel 表格, 1:只导出表格, 0:导出表格+图片数据
+     */
+    private Boolean onlyExcel;
+
     //getter and setter
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-    }
-
     public Long getEntryStartTime() {
         return entryStartTime;
     }
 
-    public void setEntryStartTime(Long accessStartTime) {
-        this.entryStartTime = accessStartTime;
+    public void setEntryStartTime(Long entryStartTime) {
+        this.entryStartTime = entryStartTime;
     }
 
     public Long getEntryEndTime() {
         return entryEndTime;
     }
 
-    public void setEntryEndTime(Long accessEndTime) {
-        this.entryEndTime = accessEndTime;
+    public void setEntryEndTime(Long entryEndTime) {
+        this.entryEndTime = entryEndTime;
     }
 
     public Long getRecogStartTime() {
@@ -126,5 +110,36 @@ public class RecheckSearchDto {
 
     public void setIllegalCode(String illegalCode) {
         this.illegalCode = illegalCode;
+    }
+
+    public List<Integer> getRecordIds() {
+        return recordIds;
+    }
+
+    public void setRecordIds(List<Integer> recordIds) {
+        this.recordIds = recordIds;
+    }
+
+    public Boolean getOnlyExcel() {
+        return onlyExcel;
+    }
+
+    public void setOnlyExcel(Boolean onlyExcel) {
+        this.onlyExcel = onlyExcel;
+    }
+
+    @Override
+    public String toString() {
+        return "ExportRecheckResultDto{" +
+                "entryStartTime=" + entryStartTime +
+                ", entryEndTime=" + entryEndTime +
+                ", recogStartTime=" + recogStartTime +
+                ", recogEndTime=" + recogEndTime +
+                ", recheckCodeList=" + recheckCodeList +
+                ", manualCheckStatus=" + manualCheckStatus +
+                ", illegalCode='" + illegalCode + '\'' +
+                ", recordIds=" + recordIds +
+                ", onlyExcel=" + onlyExcel +
+                '}';
     }
 }

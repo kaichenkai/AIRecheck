@@ -54,7 +54,11 @@
             <artifactId>hutool-all</artifactId>
             <version>5.3.5</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>25.0-jre</version>
+        </dependency>
         <!--https://mvnrepository.com/artifact/com.alibaba/druid-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -129,6 +133,36 @@
             <version>4.5.2</version>
         </dependency>
 
+        <!-- poi office -->
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.io -->
+        <dependency>
+            <groupId>org.apache.directory.studio</groupId>
+            <artifactId>org.apache.commons.io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.12.2</version>
+        </dependency>
         <!--devtools热部署-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
