@@ -1129,11 +1129,12 @@
         params.onlyExcel = _this.onExportExcel;
         this._services.recheckResultExport(params, { method: "post" }).then(resp => {
           this.exportLoading = false;
-          if (parseInt(resp.code, 10) !== 0) {
-            this.tools.message(resp.message || "未知错误", "warning")
-          } else {
-            this.tools.message("导出完成", "success")
-          }
+          // if (parseInt(resp.code, 10) !== 0) {
+          //   this.tools.message(resp.message || "未知错误", "warning")
+          // } else {
+          console.log(resp);
+          this.tools.message("导出完成", "success")
+          // }
         })
       }
     }

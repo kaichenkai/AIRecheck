@@ -27,7 +27,7 @@ public class ConfigServer {
      */
     @NotBlank(message = "不能为空")
     @Model(desc = " dataRootDir", level = Level.RESTART, group = ConfigResEnum.GROUP_SERVER, groupDesc = ConfigResEnum.GROUPDESC_SERVER)
-    private static String dataRootDir = SysPropertyUtil.getINSTALLDIR()+"/data/aitraffic/";
+    private static String dataRootDir = SysPropertyUtil.getINSTALLDIR()+"/data/";
     /**
      * 统计时间间隔，单位分钟，默认60分钟
      */

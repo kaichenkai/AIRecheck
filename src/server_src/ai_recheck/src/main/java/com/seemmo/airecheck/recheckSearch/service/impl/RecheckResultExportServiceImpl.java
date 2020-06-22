@@ -1,5 +1,6 @@
 package com.seemmo.airecheck.recheckSearch.service.impl;
 
+import com.google.common.collect.Maps;
 import com.seemmo.airecheck.commons.PublicConfig;
 import com.seemmo.airecheck.commons.model.ConstExportNames;
 import com.seemmo.airecheck.constant.BaseConstant;
@@ -45,6 +46,7 @@ public class RecheckResultExportServiceImpl implements RecheckResultExportServic
     @Autowired
     private TrafficWfRecordSearchMapper trafficWfRecordSearchMapper;
 
+    @Autowired
     private PublicConfig config;
 
     public Response executePacking(RecheckResultExportDto recheckResultExportDto) {
@@ -68,8 +70,8 @@ public class RecheckResultExportServiceImpl implements RecheckResultExportServic
         //绝对路径()
         String exportAbsoluteDir = config.getRecordRootDir() + File.separator + exportRelativeDir;
         FileUtil.createDir(exportAbsoluteDir);
-        //存放临时文件
-        String exportTmpDir = exportAbsoluteDir + UUID.randomUUID().toString();
+        //创建临时目录
+        String exportTmpDir = exportAbsoluteDir + UUID.randomUUID().toString() + File.separator;
         FileUtil.createDir(exportTmpDir);
         //创建一个zip包
         File targetZipFile = new File(exportAbsoluteDir + File.separator + zipFileName);
@@ -88,9 +90,10 @@ public class RecheckResultExportServiceImpl implements RecheckResultExportServic
             //删除临时目录
             FileUtil.delFolder(exportTmpDir);
             //返回压缩包文件路径
-            Map<String, Object> dataMap = new HashMap<>();
-            dataMap.put("filePath", targetZipFile.getAbsolutePath());
-            return ResponseGenerator.genSuccessResp(dataMap);
+//            Map<String, Object> dataMap = Maps.newHashMap();
+//            dataMap.put("file", targetZipFile);
+//            dataMap.put("fileSize", targetZipFile.length());
+            return ResponseGenerator.genSuccessResp(targetZipFile);
         } catch (Exception e) {
             logger.error(String.format("export failed, error:[]", e.getMessage()));
             return ResponseGenerator.genErrorResp(ExceptionInfo.EXPORT_ERROR);
